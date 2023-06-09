@@ -1,13 +1,16 @@
 package com.bilgeadam.controller;
 
 import com.bilgeadam.dto.request.CreateEmployeeRequestDto;
-import com.bilgeadam.dto.request.CreateUserRequestDto;
+
+import com.bilgeadam.dto.request.NewCreateManagerUserRequestDto;
+import com.bilgeadam.dto.request.NewCreateVisitorUserRequestDto;
 import com.bilgeadam.dto.response.CreateEmployeeResponseDto;
+import com.bilgeadam.dto.response.ListPersonnelResponseDto;
 import com.bilgeadam.repository.entity.UserProfile;
 import com.bilgeadam.service.UserProfileService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,11 +32,24 @@ public class UserProfileController {
         return ResponseEntity.ok(userProfileService.activateStatus(authId));
     }
 
+    @PostMapping("/create-visitor")
     @Hidden
-    @PostMapping("/create-user-from-auth")
-    public ResponseEntity<Boolean> createUserFromAuth(@RequestBody CreateUserRequestDto dto) {
-        return ResponseEntity.ok(userProfileService.createUserFromAuth(dto));
+    public ResponseEntity<Boolean> createVisitorUser(@RequestBody NewCreateVisitorUserRequestDto dto){
+        return ResponseEntity.ok(userProfileService.createVisitorUser(dto));
     }
+
+    @PostMapping("/create-manager")
+    @Hidden
+    public ResponseEntity<Boolean> createManagerUser(@RequestBody NewCreateManagerUserRequestDto dto){
+        return ResponseEntity.ok(userProfileService.createManagerUser(dto));
+    }
+
+
+//    @Hidden
+//    @PostMapping("/create-user-from-auth")
+//    public ResponseEntity<Boolean> createUserFromAuth(@RequestBody CreateUserRequestDto dto) {
+//        return ResponseEntity.ok(userProfileService.createUserFromAuth(dto));
+//    }
 
     @PostMapping("/save-employee/{token}")
     public ResponseEntity<CreateEmployeeResponseDto> saveEmployee(@RequestBody @Valid CreateEmployeeRequestDto dto, @PathVariable String token){
@@ -54,15 +70,30 @@ public class UserProfileController {
         return ResponseEntity.ok(userProfileService.findByCompanyName(companyName));
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<List<String>> getEmployeeList(@RequestHeader("Authorization") String token) {
-        List<String> employeeList = userProfileService.getEmployeeList(token);
-        return ResponseEntity.ok(employeeList);
+    @GetMapping("/personnel-list/{token}")
+    public ResponseEntity<List<UserProfile>> getEmployeeList(@PathVariable String token) {
+        return ResponseEntity.ok(userProfileService.getEmployeeList(token));
     }
-    @Hidden
+    /*@Hidden
     @PostMapping("/activate-director/{directorId}")
     public ResponseEntity<Boolean> activateDirector(@PathVariable Long directorId){
         return ResponseEntity.ok(userProfileService.activateDirector(directorId));
     }
+*/
+    @PutMapping(ADMINCHANGEMANAGERSTATUS)
+    public ResponseEntity<Boolean> adminChangeManagerStatus(String token,String userId, Boolean action) {
+        return ResponseEntity.ok(userProfileService.adminChangeManagerStatus(token,userId, action));
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 }

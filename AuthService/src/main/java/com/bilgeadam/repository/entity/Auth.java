@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -28,9 +29,15 @@ public class Auth extends Base {
     private String password;
     private String companyName;
     private String degree;
+    private String taxNumber;
+
+
+    @ElementCollection(targetClass = ERole.class)
+    @JoinTable(name = "tblRoleTypes", joinColumns = @JoinColumn(name = "authId"))
+    @Column(name = "roleType", nullable = false)
     @Enumerated(EnumType.STRING)
-    @Builder.Default
-    private ERole role=ERole.VISITOR;
+    private List<ERole> roles;
+
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private EStatus status=EStatus.PENDING;

@@ -1,7 +1,6 @@
 package com.bilgeadam.mapper;
 
-import com.bilgeadam.dto.request.CreateUserRequestDto;
-import com.bilgeadam.dto.request.RegisterRequestDto;
+import com.bilgeadam.dto.request.*;
 import com.bilgeadam.dto.response.RegisterResponseDto;
 import com.bilgeadam.rabbitmq.model.MailRegisterModel;
 import com.bilgeadam.repository.entity.Auth;
@@ -13,11 +12,15 @@ import org.mapstruct.factory.Mappers;
 public interface IAuthMapper {
     IAuthMapper INSTANCE= Mappers.getMapper(IAuthMapper.class);
 
-    Auth fromRegisterRequestDtoToAuth(final RegisterRequestDto dto);
+    Auth fromVisitorsRequestDtoToAuth(final RegisterVisitorRequestDto dto);
+    NewCreateVisitorUserRequestDto fromAuthNewCreateVisitorUserRequestDto(final Auth auth);
+    Auth fromManagerRequestDtoToAuth(final RegisterManagerRequestDto dto);
+    NewCreateManagerUserRequestDto fromRegisterManagerRequestDtoToNewCreateManagerUserRequestDto(final RegisterManagerRequestDto dto);
+
     RegisterResponseDto fromAuthToRegisterResponseDto(final Auth auth);
 
     CreateUserRequestDto fromAuthToCreateUserRequestDto(final Auth auth);
     MailRegisterModel fromAuthToMailRegisterModel(final Auth auth);
-    Auth toUserAuth(RegisterRequestDto dto);
+    Auth toUserAuth(RegisterVisitorRequestDto dto);
 
 }

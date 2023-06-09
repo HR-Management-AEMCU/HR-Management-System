@@ -1,15 +1,16 @@
 package com.bilgeadam.service;
 
 import com.bilgeadam.dto.request.*;
-import com.bilgeadam.dto.response.ForgotPasswordMailResponseDto;
 import com.bilgeadam.dto.response.LoginResponseDto;
-import com.bilgeadam.dto.response.GetCompanyResponseDto;
 import com.bilgeadam.dto.response.RegisterResponseDto;
+import com.bilgeadam.dto.response.UpdateManagerStatusResponseDto;
 import com.bilgeadam.exception.AuthManagerException;
 import com.bilgeadam.exception.ErrorType;
 import com.bilgeadam.manager.ICompanyManager;
 import com.bilgeadam.manager.IEmailManager;
 import com.bilgeadam.mapper.IAuthMapper;
+import com.bilgeadam.rabbitmq.model.ForgotPasswordMailModel;
+import com.bilgeadam.rabbitmq.producer.ForgotPasswordProducer;
 import com.bilgeadam.rabbitmq.producer.MailRegisterProducer;
 import com.bilgeadam.repository.entity.Auth;
 import com.bilgeadam.repository.enums.ERole;
@@ -23,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthService extends ServiceManager<Auth, Long> {
@@ -33,12 +35,13 @@ public class AuthService extends ServiceManager<Auth, Long> {
     private final MailRegisterProducer mailRegisterProducer;
     private final IEmailManager iEmailManager;
     private final ICompanyManager iCompanyManager;
+    private final ForgotPasswordProducer forgotPasswordProducer;
 
 
     public AuthService(IAuthRepository authRepository, JwtTokenProvider jwtTokenProvider,
                        IUserProfileManager userManager, PasswordEncoder passwordEncoder,
                        MailRegisterProducer mailRegisterProducer,
-                       IEmailManager iEmailManager, ICompanyManager iCompanyManager) {
+                       IEmailManager iEmailManager, ICompanyManager iCompanyManager, ForgotPasswordProducer forgotPasswordProducer) {
         super(authRepository);
         this.authRepository = authRepository;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -48,9 +51,60 @@ public class AuthService extends ServiceManager<Auth, Long> {
 
         this.iEmailManager = iEmailManager;
         this.iCompanyManager = iCompanyManager;
+        this.forgotPasswordProducer = forgotPasswordProducer;
+    }
+    public Boolean registerAdmin(RegisterVisitorRequestDto dto){
+        Optional<Auth> optionalAuth = authRepository.findOptionalByEmail(dto.getEmail());
+        if(!optionalAuth.isEmpty())
+            throw new AuthManagerException(ErrorType.DUPLICATE_USER);
+        Auth auth = IAuthMapper.INSTANCE.fromVisitorsRequestDtoToAuth(dto);
+        auth.setRoles(List.of(ERole.ADMIN));
+        if (dto.getPassword().equals(dto.getRepassword())){
+            auth.setPassword(passwordEncoder.encode(dto.getPassword()));
+            auth.setStatus(EStatus.ACTIVE);
+            save(auth);
+            userManager.createVisitorUser(IAuthMapper.INSTANCE.fromAuthNewCreateVisitorUserRequestDto(auth));
+            return true;
+        }
+        throw new AuthManagerException(ErrorType.PASSWORD_ERROR);
+    }
+
+    public Boolean registerVisitor(RegisterVisitorRequestDto dto){
+        Optional<Auth> optionalAuth = authRepository.findOptionalByEmail(dto.getEmail());
+        if(!optionalAuth.isEmpty())
+            throw new AuthManagerException(ErrorType.DUPLICATE_USER);
+        Auth auth = IAuthMapper.INSTANCE.fromVisitorsRequestDtoToAuth(dto);
+        auth.setRoles(List.of(ERole.VISITOR));
+        if (dto.getPassword().equals(dto.getRepassword())){
+            auth.setPassword(passwordEncoder.encode(dto.getPassword()));
+            auth.setStatus(EStatus.ACTIVE);
+            save(auth);
+            userManager.createVisitorUser(IAuthMapper.INSTANCE.fromAuthNewCreateVisitorUserRequestDto(auth));
+            return true;
+        }
+        throw new AuthManagerException(ErrorType.PASSWORD_ERROR);
+    }
+
+    public RegisterResponseDto registerManager(RegisterManagerRequestDto dto){
+        Auth auth = IAuthMapper.INSTANCE.fromManagerRequestDtoToAuth(dto);
+        auth.setRoles(List.of(ERole.MANAGER,ERole.PERSONNEL));
+        if (dto.getPassword().equals(dto.getRepassword())){
+            auth.setActivationCode(CodeGenerator.generateCode());
+            auth.setPassword(passwordEncoder.encode(dto.getPassword()));
+            save(auth);
+            NewCreateManagerUserRequestDto managerUserDto = IAuthMapper.INSTANCE.fromRegisterManagerRequestDtoToNewCreateManagerUserRequestDto(dto);
+            managerUserDto.setAuthId(auth.getAuthId());
+            userManager.createManagerUser(managerUserDto);
+        }else {
+            throw new AuthManagerException(ErrorType.PASSWORD_ERROR);
+        }
+        RegisterResponseDto responseDto = IAuthMapper.INSTANCE.fromAuthToRegisterResponseDto(auth);
+        return responseDto;
     }
 
 
+
+    /*unzile register
     public RegisterResponseDto register(RegisterRequestDto dto) {
         Auth auth = IAuthMapper.INSTANCE.fromRegisterRequestDtoToAuth(dto);
         Optional<Auth> optionalAuth = authRepository.findOptionalByEmail(auth.getEmail());
@@ -81,7 +135,10 @@ public class AuthService extends ServiceManager<Auth, Long> {
             return responseDto;
         }
         throw new AuthManagerException(ErrorType.USERNAME_DUPLICATE);
-    }
+    }*/
+
+
+
 
     public Boolean activateStatus(ActivateRequestDto dto) {
         Optional<Auth> auth = findById(dto.getId());
@@ -120,44 +177,45 @@ public class AuthService extends ServiceManager<Auth, Long> {
         } else if (!auth.get().getStatus().equals(EStatus.ACTIVE)) {
             throw new AuthManagerException(ErrorType.ACTIVATE_CODE_ERROR);
         }
-        Optional<String> token = jwtTokenProvider.createToken(auth.get().getAuthId(), auth.get().getRole());
+        List<String> roleList = auth.get().getRoles().stream().map(x -> x.toString()).collect(Collectors.toList());
+        Optional<String> token = jwtTokenProvider.createToken(auth.get().getAuthId(), roleList);
         token.orElseThrow(() -> {
             throw new AuthManagerException(ErrorType.TOKEN_NOT_CREATED);
         });
         LoginResponseDto loginResponseDto = LoginResponseDto.builder()
                 .token(token.get())
-                .role(auth.get().getRole().toString())
+                //.role(auth.get().getRole().toString())
                 .build();
 
         return loginResponseDto;
     }
 
-    public boolean createUser(RegisterRequestDto dto) {
-        try {
-            IAuthMapper iAuthMapper = IAuthMapper.INSTANCE;
-
-
-            Auth auth = iAuthMapper.toUserAuth(dto);
-            auth.setPassword(CodeGenerator.generateCode());
-            authRepository.save(auth);
-
-
-            iEmailManager.sendEmailAddressAndPassword(MailSenderDto.builder()
-                    .content("Dear User\n\nYou can sign in using the information below. \n\nPassword:" + auth.getPassword() +
-                            "\n \nEmail :" + auth.getEmail() + "\n \nHr Management")
-                    .topic("Login Information")
-                    .email(auth.getEmail())
-
-                    .build());
-
-
-            return true;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new AuthManagerException(ErrorType.USER_NOT_FOUND);
-        }
-    }
+//    public boolean createUser(RegisterVisitorRequestDto dto) {
+//        try {
+//            IAuthMapper iAuthMapper = IAuthMapper.INSTANCE;
+//
+//
+//            Auth auth = iAuthMapper.toUserAuth(dto);
+//            auth.setPassword(CodeGenerator.generateCode());
+//            authRepository.save(auth);
+//
+//
+//            iEmailManager.sendEmailAddressAndPassword(MailSenderDto.builder()
+//                    .content("Dear User\n\nYou can sign in using the information below. \n\nPassword:" + auth.getPassword() +
+//                            "\n \nEmail :" + auth.getEmail() + "\n \nHr Management")
+//                    .topic("Login Information")
+//                    .email(auth.getEmail())
+//
+//                    .build());
+//
+//
+//            return true;
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new AuthManagerException(ErrorType.USER_NOT_FOUND);
+//        }
+//    }
 
     public Boolean passwordChange(FromUserProfilePasswordChangeDto dto) {
         Optional<Auth> auth = authRepository.findById(dto.getAuthId());
@@ -169,7 +227,28 @@ public class AuthService extends ServiceManager<Auth, Long> {
         return true;
     }
 
-    public Boolean forgotPassword(String email) {
+    public Boolean forgotPasswordRequest(String email){
+        Optional<Auth> optionalAuth = authRepository.findOptionalByEmail(email);
+        if(optionalAuth.isEmpty())
+            throw new AuthManagerException(ErrorType.USER_NOT_FOUND);
+        if(!optionalAuth.get().getStatus().equals(EStatus.ACTIVE))
+            throw new RuntimeException("Kullanıcı aktif değil");
+        forgotPasswordProducer.sendForgotPassword(ForgotPasswordMailModel.builder()
+                .authId(optionalAuth.get().getAuthId())
+                .email(optionalAuth.get().getEmail())
+                .build());
+        return true;
+    }
+    public Boolean updateManagerStatus(UpdateManagerStatusResponseDto dto) {
+        Optional<Auth> auth = findById(dto.getAuthId());
+        if(auth.isEmpty())
+            throw new AuthManagerException(ErrorType.USER_NOT_FOUND);
+        auth.get().setStatus(dto.getStatus());
+        update(auth.get());
+        return true;
+    }
+
+    /*public Boolean forgotPassword(String email) {
         Optional<Auth> auth = authRepository.findOptionalByEmail(email);
         if (auth.get().getStatus().equals(EStatus.ACTIVE)) {
             //random password variable
@@ -192,9 +271,9 @@ public class AuthService extends ServiceManager<Auth, Long> {
         } else {
             throw new AuthManagerException(ErrorType.ACTIVATE_CODE_ERROR);
         }
-    }
+    }*/
 
-    public Boolean activateDirector(String token, Long directorId) {
+    /*public Boolean activateDirector(String token, Long directorId) {
         Optional<String> adminRole = jwtTokenProvider.getRoleFromToken(token);
         Optional<Auth> director = findById(directorId);
         if (adminRole.get().isEmpty())
@@ -211,6 +290,6 @@ public class AuthService extends ServiceManager<Auth, Long> {
             userManager.activateDirector(directorId);
         }
         return true;
-    }
+    }*/
 
 }

@@ -16,7 +16,8 @@ public enum ErrorType {
     INVALID_TOKEN(4600,"Token Hatası" ,HttpStatus.BAD_REQUEST ),
     TOKEN_NOT_CREATED(4600,"Token Oluşturulamadı Hatası" ,HttpStatus.BAD_REQUEST ),
     INVALID_ROLE(4700,"Bu işlemi sadece admin rolüne sahip kişiler yapabilir",HttpStatus.BAD_REQUEST),
-    COMPANY_NOT_FOUND(4800,"Bu şirket bulunamadı",HttpStatus.BAD_REQUEST);
+    COMPANY_NOT_FOUND(4800,"Bu şirket bulunamadı",HttpStatus.BAD_REQUEST),
+    DUPLICATE_USER(4900, "Bu kullanıcı zaten kayıtlı", HttpStatus.BAD_REQUEST);
 
     private int code;
     private String message;

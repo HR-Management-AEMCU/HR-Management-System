@@ -7,8 +7,8 @@ spring:
     username: java7
     password: root
   mail:
-    username: ${mailadresi} # saved on env.
-    password: ${mailsifrem} # saved on env.
+    username: emre.sahbudak.bilgeadamboost@gmail.com #${mailadresi} # saved on env.
+    password: mzfrvnamtobshhfu #${mailsifrem} # saved on env.
     host: smtp.gmail.com
     port: 587
     properties:
@@ -17,3 +17,9 @@ spring:
           auth: true
           starttls:
             enable: true
+
+rabbitmq:
+  queueForgotPassword: forgot-password-mail-queue
+  registerMailQueue: mail-queue
+  queueResetPassword: reset-password-mail-queue
+  queuePersonnelPassword: queue-personnel-password
