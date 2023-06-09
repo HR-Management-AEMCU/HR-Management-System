@@ -1,0 +1,8 @@
+rootProject.name = 'HR_ManagementSystem'
+include 'CompanyService'
+include 'AuthService'
+include 'UserProfileService'
+include 'ConfigServer'
+include 'ConfigServerGit'
+include 'MailService'
+

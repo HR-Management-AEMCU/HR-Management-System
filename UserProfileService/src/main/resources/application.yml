@@ -1,0 +1,9 @@
+spring:
+  cloud:
+    config:
+      uri: http://localhost:8888 #${config-url}
+  config:
+    import: "configserver:"
+  application:
+    name: userprofile-service-application
+    #http://localhost:8888
