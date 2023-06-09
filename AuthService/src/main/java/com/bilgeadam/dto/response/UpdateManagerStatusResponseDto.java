@@ -1,15 +1,16 @@
 package com.bilgeadam.dto.response;
 
+import com.bilgeadam.repository.enums.EStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginResponseDto {
-    private  String token;
-    //private  String role;
+@Builder
+public class UpdateManagerStatusResponseDto {
+    private EStatus status;
+    private Long authId;
 }

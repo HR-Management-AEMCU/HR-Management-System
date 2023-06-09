@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateEmployeeResponseDto {
+public class ListPersonnelResponseDto {
     String name;
     String surname;
     Double salary;

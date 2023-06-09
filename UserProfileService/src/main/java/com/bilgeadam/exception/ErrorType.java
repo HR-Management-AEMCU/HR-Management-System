@@ -17,10 +17,10 @@ public enum ErrorType {
     ACTIVATE_CODE_ERROR(4500, "Aktivasyon kod hatası", HttpStatus.BAD_REQUEST),
     INVALID_TOKEN(4600,"Token hatası" ,  HttpStatus.BAD_REQUEST),
     TOKEN_NOT_CREATED(4700, "Token oluşturulamadı", HttpStatus.BAD_REQUEST),
-    ROLE_ERROR(4800,"Bu işlemi sadece director rolüne sahip kişiler gerçekleştirebilir",HttpStatus.BAD_REQUEST),
+    ROLE_ERROR(4800,"Bu işlemi sadece manager rolüne sahip kişiler gerçekleştirebilir",HttpStatus.BAD_REQUEST),
     EMPLOYEE_NOT_FOUND(4900,"Böyle bir çalışan bulunmamaktadır.",HttpStatus.BAD_REQUEST),
-    DIRECTORY_ERROR(5000,"Bu işlemi sadece o çalışanın firma yöneticisi gerçekleştirebilir",HttpStatus.BAD_REQUEST);
-
+    DIRECTORY_ERROR(5000,"Bu işlemi sadece o çalışanın firma yöneticisi gerçekleştirebilir",HttpStatus.BAD_REQUEST),
+    AUTHORIZATION_ERROR(4200,"You're not authorized to do this.", HttpStatus.BAD_REQUEST);
     private int code;
     private String message;
     HttpStatus httpStatus;

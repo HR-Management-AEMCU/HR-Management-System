@@ -4,26 +4,68 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitmqConfig {
 
-    private String exchange = "exchangeAuth";
+    @Value("${rabbitmq.exchange-auth}")
+    private String exchange;
+
     @Bean
-    DirectExchange exchangeAuth(){
-        return new DirectExchange(exchange);
-    }
-    // mail activation code
-    private String queueRegister = "queueRegister";
-    private String bindingKeyRegister = "bindingKeyRegister";
+    DirectExchange directExchange() {return new DirectExchange(exchange);}
+    @Value("${rabbitmq.queueForgotPassword}")
+    private String forgotPasswordQueue;
+    @Value("${rabbitmq.forgotPasswordMailBindingKey}")
+    private String forgotPasswordMailBindingKey;
     @Bean
-    Queue registerQueue(){
-        return new Queue(queueRegister);
-    }
+    Queue forgotPasswordQueue(){return new Queue(forgotPasswordQueue);}
     @Bean
-    public Binding bindingRegister(final Queue registerQueue, final DirectExchange exchangeAuth){
-        return BindingBuilder.bind(registerQueue).to(exchangeAuth).with(bindingKeyRegister);
+    public Binding bindingForgotPasswordQueue(final Queue forgotPasswordQueue,final DirectExchange exchange){
+        return BindingBuilder.bind(forgotPasswordQueue).to(exchange).with(forgotPasswordMailBindingKey);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    private String exchange = "exchangeAuth";
+//    @Bean
+//    DirectExchange exchangeAuth(){
+//        return new DirectExchange(exchange);
+//    }
+//    // mail activation code
+//    private String queueRegister = "queueRegister";
+//    private String bindingKeyRegister = "bindingKeyRegister";
+//
+//    @Bean
+//    Queue registerQueue(){
+//        return new Queue(queueRegister);
+//    }
+//    @Bean
+//    public Binding bindingRegister(final Queue registerQueue, final DirectExchange exchangeAuth){
+//        return BindingBuilder.bind(registerQueue).to(exchangeAuth).with(bindingKeyRegister);
+//    }
 }

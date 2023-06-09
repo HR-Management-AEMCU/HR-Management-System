@@ -36,3 +36,8 @@ mail service için env dataları
     
     mailadresi=bertanjava7@gmail.com;mailsifrem=xsrkurhceqzcpgde
 
+AuthService --> 8090
+CompanyService --> 8070
+UserService --> 8060
+MailService--> 8085
+

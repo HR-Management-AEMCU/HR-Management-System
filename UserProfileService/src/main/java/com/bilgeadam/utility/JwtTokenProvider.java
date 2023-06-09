@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,7 +25,7 @@ public class JwtTokenProvider {
 
     public Optional<String> createToken(Long id){
         String token = null;
-        Date date = new Date(System.currentTimeMillis() + (1000*60*15));
+        Date date = new Date(System.currentTimeMillis() + (1000*60*50));
         try {
             token = JWT.create()
                     .withAudience(audience)
@@ -41,7 +42,7 @@ public class JwtTokenProvider {
     }
     public Optional<String> createToken(Long id, ERole role) {
         String token = null;
-        Date date = new Date(System.currentTimeMillis() + (1000 * 60 * 15));
+        Date date = new Date(System.currentTimeMillis() + (1000 * 60 * 50));
         try {
             token = JWT.create()
                     .withAudience(audience)
@@ -74,7 +75,7 @@ public class JwtTokenProvider {
         }
     }
 
-    public Optional<String> getRoleFromToken(String token){
+    /*public Optional<String> getRoleFromToken(String token){
         try{
             Algorithm algorithm = Algorithm.HMAC512(secretKey);
             JWTVerifier verifier = JWT.require(algorithm).withAudience(audience).withIssuer(issuer).build();
@@ -84,6 +85,21 @@ public class JwtTokenProvider {
             }
             String role = decodedJWT.getClaim("role").asString();
             return Optional.of(role); // == Optional<String>
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            throw new UserManagerException(ErrorType.INVALID_TOKEN);
+        }
+    }*/
+    public List<String> getRoleFromToken(String token){
+        try{
+            Algorithm algorithm = Algorithm.HMAC512(secretKey);
+            JWTVerifier verifier = JWT.require(algorithm).withAudience(audience).withIssuer(issuer).build();
+            DecodedJWT decodedJWT = verifier.verify(token);
+            if (decodedJWT == null){
+                throw new UserManagerException(ErrorType.INVALID_TOKEN);
+            }
+            List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
+            return roles;
         }catch (Exception e){
             System.out.println(e.getMessage());
             throw new UserManagerException(ErrorType.INVALID_TOKEN);

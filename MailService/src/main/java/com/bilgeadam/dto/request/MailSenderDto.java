@@ -1,4 +1,4 @@
-package com.bilgeadam.dto;
+package com.bilgeadam.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

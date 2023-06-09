@@ -1,5 +1,6 @@
 package com.bilgeadam.rabbitmq.consumer;
 
+import com.bilgeadam.rabbitmq.model.ForgotPasswordMailModel;
 import com.bilgeadam.rabbitmq.model.MailRegisterModel;
 import com.bilgeadam.service.MailService;
 import lombok.RequiredArgsConstructor;
@@ -8,11 +9,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MailRegisterConsumer {
+public class ForgotPaswordConsumer {
     private final MailService mailService;
-//    @RabbitListener(queues = "queueRegister")
-//    public void sendMailRegister(MailRegisterModel model){
-//        System.out.println(model.getEmail());
-//        mailService.sendRegisterMail(model);
-//    }
+
+    @RabbitListener(queues = ("${rabbitmq.queueForgotPassword}"))
+    public void sendMailForgotPasswordRequest(ForgotPasswordMailModel model){
+        mailService.forgotPasswordRequestMail(model);
+    }
 }

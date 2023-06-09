@@ -12,10 +12,12 @@ import java.util.Optional;
 public interface IUserProfileRepository extends MongoRepository<UserProfile, String> {
 
     Optional<UserProfile> findByAuthId(Long authId);
+
     Optional<UserProfile> findByAuthIdAndRole(Long authId,String role);
     List<UserProfile> findAllByCompanyName(String companyName);
 
 
     List<UserProfile> findAllByRoleAndCompanyName(ERole employee, String companyName);
+
 
 }
