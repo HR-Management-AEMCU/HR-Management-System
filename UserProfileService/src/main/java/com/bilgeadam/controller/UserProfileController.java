@@ -44,6 +44,11 @@ public class UserProfileController {
         return ResponseEntity.ok(userProfileService.createManagerUser(dto));
     }
 
+    @GetMapping("/public-holidays")
+    public ResponseEntity<List<String[]>> publicHolidays(){
+        return ResponseEntity.ok(userProfileService.getPublicHolidays());
+    }
+
 
 //    @Hidden
 //    @PostMapping("/create-user-from-auth")

@@ -47,6 +47,8 @@ ext {
             springBootElasticSearch     : "org.springframework.boot:spring-boot-starter-data-elasticsearch:$versions.springBoot",
             //Security
             springBootSecurity          : "org.springframework.boot:spring-boot-starter-security:$versions.springBoot",
+            //JSON
+            JSON                        :"org.json:json:20230227",
             //Email Generator
             mail                       : "javax.mail:javax.mail-api:$versions.mail"
     ]
