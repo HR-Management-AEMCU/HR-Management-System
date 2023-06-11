@@ -47,6 +47,7 @@ public class AuthController {
         return ResponseEntity.ok(authService.registerManager(dto));
     }
     @GetMapping(FIND_ALL)
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<List<Auth>> findAll() {
         return ResponseEntity.ok(authService.findAll());
     }
@@ -61,6 +62,11 @@ public class AuthController {
     @CrossOrigin
     @PostMapping(LOGIN)
     public ResponseEntity<LoginResponseDto> loginUser(@RequestBody LoginRequestDto dto){
+        return ResponseEntity.ok(authService.login(dto));
+    }
+    @CrossOrigin
+    @PostMapping(LOGIN_ADMIN)
+    public ResponseEntity<LoginResponseDto> loginAdmin(@RequestBody LoginRequestDto dto){
         return ResponseEntity.ok(authService.login(dto));
     }
 
