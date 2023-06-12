@@ -90,6 +90,12 @@ public class UserProfileController {
         return ResponseEntity.ok(userProfileService.adminChangeManagerStatus(token,userId, action));
     }
 
+    @GetMapping("/role-manager-status-inactive")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<List<UserProfile>> findRoleManagerAndStatusInactive(){
+        return ResponseEntity.ok(userProfileService.findRoleManagerAndStatusInactive());
+    }
+
 
 
 
