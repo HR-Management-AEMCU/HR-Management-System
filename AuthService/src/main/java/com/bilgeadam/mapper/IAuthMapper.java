@@ -27,4 +27,7 @@ public interface IAuthMapper {
     MailRegisterModel fromAuthToMailRegisterModel(final Auth auth);
     Auth toUserAuth(RegisterVisitorRequestDto dto);
 
+    //company manager save için dönüşüm
+    ManagerCompanySaveRequestDto fromAuthToCompanyManagerSaveRequestDto(final Auth auth);
+
 }

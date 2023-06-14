@@ -14,7 +14,7 @@ import javax.validation.constraints.*;
 public class RegisterManagerRequestDto {
 
     @NotNull(message = "CompanyID boş bırakmayınız.")
-    private Long companyId;
+    //private Long companyId;
     @NotBlank(message = "Adınızı boş bırakmayınız.")
     private String name;
     @NotBlank(message = "Soyadınızı boş bırakmayınız.")
@@ -28,6 +28,6 @@ public class RegisterManagerRequestDto {
     private String password;
     private String repassword;
     private String companyName;
-
+    private String taxNumber;
 
 }
