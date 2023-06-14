@@ -72,5 +72,40 @@ public class CommentService extends ServiceManager<Comment,Long> {
 
         throw new CompanyManagerException(ErrorType.AUTHORIZATION_ERROR);
     }
+    public boolean addComplaint(Long commentId) {
+        Optional<Comment> commentOptional = commentRepository.findById(commentId);
+        if (commentOptional.isEmpty()) {
+            throw new CompanyManagerException(ErrorType.COMMENT_NOT_FOUND);
+        }
+        Comment comment = commentOptional.get();
+        if (comment.getStatus() != ECommentStatus.APPROVED) {
+            throw new CompanyManagerException(ErrorType.COMMENT_STATUS_ERROR);
+        }
+        comment.setStatus(ECommentStatus.COMPLAINT);
+        save(comment);
+        return true;
+    }
+
+    public boolean adminCheckComplaintMethod(String token, Long commentId, Boolean action) {
+        List<String> adminRole = jwtTokenProvider.getRoleFromToken(token);
+        if (adminRole.contains(ERole.ADMIN.toString())) {
+            Optional<Comment> complaintComment = commentRepository.findById(commentId);
+            if (complaintComment.isPresent()) {
+              //  Comment comment = complaintComment.get();
+                if (action) {
+                    complaintComment.get().setStatus(ECommentStatus.DELETED);
+                } else {
+                    complaintComment.get().setStatus(ECommentStatus.APPROVED);
+                }
+                save(complaintComment.get());
+                return true;
+            }
+            throw new CompanyManagerException(ErrorType.COMMENT_NOT_FOUND);
+        }
+        throw new CompanyManagerException(ErrorType.AUTHORIZATION_ERROR);
+    }
+
+
+
 
 }

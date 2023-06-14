@@ -27,6 +27,15 @@ public class CommentController {
         return ResponseEntity.ok(commentService.adminCommentApproval(token,commentId,action));
     }
 
+    @PostMapping(ADD_COMPLAINT_COMMENT)
+    public ResponseEntity<Boolean> addComplaint(Long commentId){
+        return ResponseEntity.ok(commentService.addComplaint(commentId));
+    }
+    @PostMapping(CHECK_COMPLAINT_COMMENT)
+    public ResponseEntity<Boolean> adminCheckComplaintMethod(String token, Long commentId, Boolean action){
+        return ResponseEntity.ok(commentService.adminCheckComplaintMethod(token,commentId,action));
+    }
+
     @GetMapping(FIND_ALL)
     public ResponseEntity<List<Comment>> getAllComments(){
         return ResponseEntity.ok(commentService.findAll());
