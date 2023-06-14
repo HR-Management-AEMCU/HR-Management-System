@@ -85,7 +85,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         if (userProfile.isEmpty()) {
             throw new UserManagerException(ErrorType.USER_NOT_FOUND);
         }
-        userProfile.get().setStatus(EStatus.ACTIVE);
+        userProfile.get().setStatus(EStatus.INACTIVE);
         update(userProfile.get());
         return true;
     }
@@ -192,7 +192,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         return true;
 
     }*/
-    public Boolean adminChangeManagerStatus(String token, String userId, Boolean action) {
+    public Boolean adminChangeManagerStatusCheck(String token, String userId) {
         Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(() -> {
             throw new UserManagerException(ErrorType.INVALID_TOKEN);
         });
@@ -203,11 +203,27 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
                 throw new UserManagerException(ErrorType.USER_NOT_FOUND);
             Optional<UserProfile> user = findById(userId);
             if (user.get().getRole().contains(ERole.MANAGER)) {
-                if (action) {
-                    user.get().setStatus(EStatus.ACTIVE);
-                } else {
-                    user.get().setStatus(EStatus.BANNED);
-                }
+                user.get().setStatus(EStatus.ACTIVE);
+                update(user.get());
+                authManager.updateManagerStatus(IUserProfileMapper.INSTANCE.fromUserProfileToUpdateManagerStatusRequestDto(user.get()));
+                return true;
+            }
+            throw new RuntimeException("NO MANAGER");
+        }
+        throw new UserManagerException(ErrorType.AUTHORIZATION_ERROR);
+    }
+    public Boolean adminChangeManagerStatusCross(String token, String userId) {
+        Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(() -> {
+            throw new UserManagerException(ErrorType.INVALID_TOKEN);
+        });
+        Optional<UserProfile> optionalAdminProfile = userProfileRepository.findByAuthId(authId);
+        List<String> role = jwtTokenProvider.getRoleFromToken(token);
+        if (role.contains(ERole.ADMIN.toString())) {
+            if (optionalAdminProfile.isEmpty())
+                throw new UserManagerException(ErrorType.USER_NOT_FOUND);
+            Optional<UserProfile> user = findById(userId);
+            if (user.get().getRole().contains(ERole.MANAGER)) {
+                user.get().setStatus(EStatus.BANNED);
                 update(user.get());
                 authManager.updateManagerStatus(IUserProfileMapper.INSTANCE.fromUserProfileToUpdateManagerStatusRequestDto(user.get()));
                 return true;
@@ -257,5 +273,12 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             e.printStackTrace();
         }
         return new ArrayList<>();
+    }
+
+    //veritabanında Rolu manager olan ve Status INACTIVE olanları getiren findall metodu
+    public List<UserProfile> findRoleManagerAndStatusInactive(){
+        List<UserProfile> userProfile=userProfileRepository.findByRoleAndStatus(ERole.MANAGER,EStatus.INACTIVE);
+        System.out.println(userProfile);
+        return userProfile;
     }
 }
