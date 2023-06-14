@@ -10,13 +10,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NewCreateManagerUserRequestDto {
+public class NewCreateAdminUserRequestDto {
     private Long authId;
     private String password;
-    private Long companyId;
     private String email;
     private String name;
     private String surname;
-    private String companyName;
-    private String taxNumber;
+    private EStatus status;
 }

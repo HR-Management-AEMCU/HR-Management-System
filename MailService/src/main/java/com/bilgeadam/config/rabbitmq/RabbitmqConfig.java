@@ -18,7 +18,12 @@ public class RabbitmqConfig {
 
 
 
+//Personnel password sending
+    @Value("${rabbitmq.queuePersonnelPassword}")
+    private String personnelPasswordQueue;
 
+    @Bean
+    Queue personnelPasswordQueue(){return new Queue(personnelPasswordQueue);}
 
 
 

@@ -1,11 +1,11 @@
 package com.bilgeadam.repository;
 
 import com.bilgeadam.repository.entity.Company;
-import com.bilgeadam.repository.view.VwCompany;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Repository
@@ -20,4 +20,8 @@ public interface ICompanyRepository extends JpaRepository<Company,Long> {
     Double findSumOfOutcomes();*/
     @Query("select c.companyName, c.companyLogoUrl from Company as c")
     List<String[]> findCompanyNames();
+
+    @Query("SELECT c.taxNumber FROM Company c")
+    List<String> findTaxNumbers();
+
 }

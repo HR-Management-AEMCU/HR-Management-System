@@ -30,7 +30,6 @@ public class Auth extends Base {
     private String companyName;
     private String taxNumber;
 
-
     @ElementCollection(targetClass = ERole.class)
     @JoinTable(name = "tblRoleTypes", joinColumns = @JoinColumn(name = "authId"))
     @Column(name = "roleType", nullable = false)

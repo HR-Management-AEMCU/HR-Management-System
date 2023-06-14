@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CreateEmployeeResponseDto {
     String name;
+
+    private Long companyId;
     String surname;
     Double salary;
     private Long salaryDate;

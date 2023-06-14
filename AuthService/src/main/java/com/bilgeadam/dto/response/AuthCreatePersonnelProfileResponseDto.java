@@ -1,22 +1,23 @@
-package com.bilgeadam.dto.request;
+package com.bilgeadam.dto.response;
 
+import com.bilgeadam.repository.enums.ERole;
 import com.bilgeadam.repository.enums.EStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NewCreateManagerUserRequestDto {
-    private Long authId;
-    private String password;
-    private Long companyId;
+public class AuthCreatePersonnelProfileResponseDto {
     private String email;
     private String name;
     private String surname;
-    private String companyName;
-    private String taxNumber;
+    private String password;
+    private List<ERole> role;
+    private EStatus status;
 }

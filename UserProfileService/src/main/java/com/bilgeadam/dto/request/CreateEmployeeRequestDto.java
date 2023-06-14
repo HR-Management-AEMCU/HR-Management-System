@@ -17,11 +17,13 @@ public class CreateEmployeeRequestDto {
     String name;
     @NotBlank(message = "Personelin soyadını boş bırakamazsınız !")
     String surname;
+    @NotBlank
+    private String password;
     @NotNull(message = "Personel maaşını bırakamazsınız !")
     Double salary;
     private Long salaryDate;
     String photo;
-
+    @NotBlank(message = "Personelin mailini boş bırakamazsınız !")
     String email;
     String companyName;
     @NotNull(message = "Personel'in doğum tarihini giriniz !")

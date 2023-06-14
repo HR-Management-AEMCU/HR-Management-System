@@ -3,9 +3,8 @@ package com.bilgeadam.controller;
 import com.bilgeadam.dto.request.*;
 import com.bilgeadam.dto.response.GetCompanyResponseDto;
 import com.bilgeadam.dto.response.ProfitLossResponseDto;
-import com.bilgeadam.repository.entity.Company;
+import com.bilgeadam.dto.response.SaveCompanyResponseDto;
 import com.bilgeadam.services.CompanyService;
-import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +16,11 @@ import static com.bilgeadam.constant.ApiUrls.*;
 @RequestMapping(COMPANY)
 @RequiredArgsConstructor
 public class CompanyController {
+
     private final CompanyService companyService;
     @PostMapping(CREATE)
-    public ResponseEntity<Company> createCompany(CreateCompanyRequestDto dto){
-        return ResponseEntity.ok(companyService.createCompany(dto));
+    public ResponseEntity<SaveCompanyResponseDto> createCompany(SaveCompanyRequestDto dto){
+        return ResponseEntity.ok(companyService.saveCompany(dto));
     }
     @DeleteMapping(DELETE_BY_ID)
     public ResponseEntity<Boolean> deleteCompany(DeleteCompanyRequestDto dto){
@@ -35,5 +35,7 @@ public class CompanyController {
     public ResponseEntity<List<GetCompanyResponseDto>> getCompanies(){
         return ResponseEntity.ok(companyService.getCompany());
     }
+
+
 
 }

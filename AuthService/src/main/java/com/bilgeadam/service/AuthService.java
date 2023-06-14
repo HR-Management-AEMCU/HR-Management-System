@@ -1,6 +1,7 @@
 package com.bilgeadam.service;
 
 import com.bilgeadam.dto.request.*;
+import com.bilgeadam.dto.response.AuthCreatePersonnelProfileResponseDto;
 import com.bilgeadam.dto.response.LoginResponseDto;
 import com.bilgeadam.dto.response.RegisterResponseDto;
 import com.bilgeadam.dto.response.UpdateManagerStatusResponseDto;
@@ -58,12 +59,13 @@ public class AuthService extends ServiceManager<Auth, Long> {
         if(!optionalAuth.isEmpty())
             throw new AuthManagerException(ErrorType.DUPLICATE_USER);
         Auth auth = IAuthMapper.INSTANCE.fromVisitorsRequestDtoToAuth(dto);
-        auth.setRoles(List.of(ERole.ADMIN));
+
         if (dto.getPassword().equals(dto.getRepassword())){
             auth.setPassword(passwordEncoder.encode(dto.getPassword()));
             auth.setStatus(EStatus.ACTIVE);
+            auth.setRoles(List.of(ERole.ADMIN));
             save(auth);
-            userManager.createVisitorUser(IAuthMapper.INSTANCE.fromAuthNewCreateVisitorUserRequestDto(auth));
+            userManager.createAdminUser(IAuthMapper.INSTANCE.fromAuthNewCreateAdminUserRequestDto(auth));
             return true;
         }
         throw new AuthManagerException(ErrorType.PASSWORD_ERROR);
@@ -170,7 +172,6 @@ public class AuthService extends ServiceManager<Auth, Long> {
 
     public LoginResponseDto login(LoginRequestDto dto) {
         Optional<Auth> auth = authRepository.findOptionalByEmail(dto.getEmail());
-        System.out.println(auth.get().getAuthId());
         if (auth.isEmpty() || !passwordEncoder.matches(dto.getPassword(), auth.get().getPassword())) {
             throw new AuthManagerException(ErrorType.LOGIN_ERROR);
         } else if (!auth.get().getStatus().equals(EStatus.ACTIVE)) {
@@ -183,7 +184,6 @@ public class AuthService extends ServiceManager<Auth, Long> {
         });
         LoginResponseDto loginResponseDto = LoginResponseDto.builder()
                 .token(token.get())
-                //.role(auth.get().getRole().toString())
                 .build();
 
         return loginResponseDto;
@@ -290,5 +290,9 @@ public class AuthService extends ServiceManager<Auth, Long> {
         }
         return true;
     }*/
-
+    public Long managerCreatePersonnelUserProfile(AuthCreatePersonnelProfileResponseDto dto){
+        Auth auth = IAuthMapper.INSTANCE.fromCreatePersonelProfileDtotoAuth(dto);
+        save(auth);
+        return auth.getAuthId();
+    }
 }

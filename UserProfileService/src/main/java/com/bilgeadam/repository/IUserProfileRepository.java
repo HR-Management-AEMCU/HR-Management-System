@@ -17,6 +17,7 @@ public interface IUserProfileRepository extends MongoRepository<UserProfile, Str
     Optional<UserProfile> findByAuthIdAndRole(Long authId,String role);
     List<UserProfile> findAllByCompanyName(String companyName);
 
+    Optional<UserProfile> findByEmail(String email);
 
     List<UserProfile> findAllByRoleAndCompanyName(ERole employee, String companyName);
 

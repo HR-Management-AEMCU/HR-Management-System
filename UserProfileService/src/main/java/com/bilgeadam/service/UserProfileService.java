@@ -1,28 +1,26 @@
 package com.bilgeadam.service;
 
 
-import com.bilgeadam.dto.request.CreateEmployeeRequestDto;
-import com.bilgeadam.dto.request.NewCreateManagerUserRequestDto;
-import com.bilgeadam.dto.request.NewCreateVisitorUserRequestDto;
+import com.bilgeadam.dto.request.*;
 import com.bilgeadam.dto.response.CreateEmployeeResponseDto;
 import com.bilgeadam.exception.ErrorType;
 import com.bilgeadam.exception.UserManagerException;
 import com.bilgeadam.manager.IAuthManager;
 import com.bilgeadam.manager.ICompanyManager;
 import com.bilgeadam.mapper.IUserProfileMapper;
+import com.bilgeadam.rabbitmq.producer.PersonelPasswordProducer;
 import com.bilgeadam.repository.IUserProfileRepository;
 import com.bilgeadam.repository.entity.UserProfile;
 import com.bilgeadam.repository.enums.ERole;
 import com.bilgeadam.repository.enums.EStatus;
-import com.bilgeadam.utility.EmailPasswordGenerator;
 import com.bilgeadam.utility.JwtTokenProvider;
 import com.bilgeadam.utility.ServiceManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -42,12 +40,17 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
     private final ICompanyManager companyManager;
     private final IAuthManager authManager;
 
-    public UserProfileService(IUserProfileRepository userProfileRepository, JwtTokenProvider jwtTokenProvider, ICompanyManager companyManager, IAuthManager authManager) {
+    private final PasswordEncoder passwordEncoder;
+    private final PersonelPasswordProducer personelPasswordProducer;
+
+    public UserProfileService(IUserProfileRepository userProfileRepository, JwtTokenProvider jwtTokenProvider, ICompanyManager companyManager, IAuthManager authManager, PasswordEncoder passwordEncoder, PersonelPasswordProducer personelPasswordProducer) {
         super(userProfileRepository);
         this.userProfileRepository = userProfileRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.companyManager = companyManager;
         this.authManager = authManager;
+        this.passwordEncoder = passwordEncoder;
+        this.personelPasswordProducer = personelPasswordProducer;
     }
 
     /*public Boolean createUserFromAuth(CreateUserRequestDto dto) {
@@ -60,6 +63,15 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         UserProfile userProfile = IUserProfileMapper.INSTANCE.fromNewCreateVisitorUserResponseDtoToUserProfile(dto);
         List<ERole> roleList = new ArrayList<>();
         roleList.add(ERole.VISITOR);
+        userProfile.setRole(roleList);
+        save(userProfile);
+        return true;
+    }
+
+    public Boolean createAdminUser(NewCreateAdminUserRequestDto dto) {
+        UserProfile userProfile = IUserProfileMapper.INSTANCE.fromNewCreateAdminUserResponseDtoToUserProfile(dto);
+        List<ERole> roleList = new ArrayList<>();
+        roleList.add(ERole.ADMIN);
         userProfile.setRole(roleList);
         save(userProfile);
         return true;
@@ -97,30 +109,42 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
     }
 
     public CreateEmployeeResponseDto saveEmployee(CreateEmployeeRequestDto dto, String token) {
-        Optional<Long> authId = jwtTokenProvider.getIdFromToken(token);
-        Optional<UserProfile> optionalUser = userProfileRepository.findByAuthId(authId.get());
-        if (optionalUser.isEmpty()) {
-            throw new UserManagerException(ErrorType.USER_NOT_FOUND);
-        }
-        System.out.println("gelen role verisi" + optionalUser.get().getRole().toString());
-        if (optionalUser.get().getRole().toString().contains(ERole.MANAGER.toString())) {
-            UserProfile user = IUserProfileMapper.INSTANCE.createEmployeeRequestDtoToUserProfile(dto);
-            if (dto.getEmail() == null || dto.getEmail() == "") {
+        List<String> role = jwtTokenProvider.getRoleFromToken(token);
+        Optional<Long> managerId = jwtTokenProvider.getIdFromToken(token);
+        if(role.contains(ERole.MANAGER.toString())){
+        Optional<UserProfile> optionalUserProfile = userProfileRepository.findByEmail(dto.getEmail());
+        if (optionalUserProfile.isEmpty()) {
+                UserProfile user = IUserProfileMapper.INSTANCE.createEmployeeRequestDtoToUserProfile(dto);
+            /*if (dto.getEmail() == null || dto.getEmail() == "") {
                 String generatedEmail = normalize(dto.getName().toLowerCase()) + "." +
                         normalize(dto.getSurname().toLowerCase()) + "@" + normalize(dto.getCompanyName().toLowerCase()).replaceAll(" ", "") + ".com";
                 user.setEmail(generatedEmail);
+            }*/
+            Optional<UserProfile> managerProfile = userProfileRepository.findByAuthId(managerId.get());
+                user.setPassword(passwordEncoder.encode(dto.getPassword()));
+                List<ERole> roleList = new ArrayList<>();
+                roleList.add(ERole.PERSONNEL);
+                user.setRole(roleList);
+                user.setStatus(EStatus.ACTIVE);
+                user.setCompanyId(managerProfile.get().getCompanyId());
+                AuthCreatePersonnelProfileRequestDto authDto =
+                        IUserProfileMapper.INSTANCE.fromUserProfileToAuthCreatePersonnelProfileRequestDto(user);
+                Long personnelAuthId = authManager.managerCreatePersonnelUserProfile(authDto).getBody();
+                user.setAuthId(personnelAuthId);
+                 save(user);
+            /*PersonnelPasswordModel personnelPasswordModel = IUserProfileMapper.INSTANCE.fromUserProfileToPersonnelPasswordModel(user);
+            personnelPasswordModel.setPassword(dto.getPassword());
+            personelPasswordProducer.sendPersonnelPassword(personnelPasswordModel);
+
+             */
+                return IUserProfileMapper.INSTANCE.userProfileToCreateEmployeeResponseDto(user);
             }
-            String generatedPassword = EmailPasswordGenerator.generatePassword();
-            user.setPassword(generatedPassword);
-            List<ERole> roleList = new ArrayList<>();
-            roleList.add(ERole.PERSONNEL);
-            user.setRole(roleList);
-            user.setStatus(EStatus.ACTIVE);
-            save(user);
-            return IUserProfileMapper.INSTANCE.userProfileToCreateEmployeeResponseDto(user);
+            throw new UserManagerException(ErrorType.USERNAME_DUPLICATE);
         }
-        throw new UserManagerException(ErrorType.ROLE_ERROR);
-    }
+        throw new UserManagerException(ErrorType.AUTHORIZATION_ERROR);
+        }
+
+
 
     public Boolean deleteEmployee(String employeeId, String token) {
         Optional<Long> authId = jwtTokenProvider.getIdFromToken(token);
@@ -274,6 +298,13 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         }
         return new ArrayList<>();
     }
+    //For Comment
+    public Optional<UserProfile> findByAuthId(Long authId) {
+        Optional<UserProfile> userProfile = userProfileRepository.findByAuthId(authId);
+        if (userProfile.isEmpty()) {
+            throw new UserManagerException(ErrorType.USER_NOT_FOUND);
+        }
+
 
     //veritabanında Rolu manager olan ve Status INACTIVE olanları getiren findall metodu
     public List<UserProfile> findRoleManagerAndStatusInactive(){

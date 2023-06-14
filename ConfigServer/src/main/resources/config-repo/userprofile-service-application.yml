@@ -21,9 +21,8 @@ jwt:
   audience: ${audience}
   issuer: ${issuer}
 
+
 #rabbitmq:
-#  queueRegister: register-queue
-#  exchange: user-exchange
-#  queueElasticRegister: elastic-register-queue
-#  elasticRegisterBindingKey: register-key
-#  queueCreatePost: queue-post
+#  user-exchange: user-exchange
+#  personnelPasswordKey: personnel-password-key
+#  queuePersonnelPassword: queue-personnel-password
