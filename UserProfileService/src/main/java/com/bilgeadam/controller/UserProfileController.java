@@ -91,9 +91,21 @@ public class UserProfileController {
         return ResponseEntity.ok(userProfileService.activateDirector(directorId));
     }
 */
-    @PutMapping(ADMINCHANGEMANAGERSTATUS)
-    public ResponseEntity<Boolean> adminChangeManagerStatus(String token,String userId, Boolean action) {
-        return ResponseEntity.ok(userProfileService.adminChangeManagerStatus(token,userId, action));
+    @PutMapping(ADMIN_CHANGE_MANAGER_STATUS_CHECK)
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<Boolean> adminChangeManagerStatusCheck(String token,String userId) {
+        return ResponseEntity.ok(userProfileService.adminChangeManagerStatusCheck(token,userId));
+    }
+    @PutMapping(ADMIN_CHANGE_MANAGER_STATUS_CROSS)
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<Boolean> adminChangeManagerStatusCross(String token,String userId) {
+        return ResponseEntity.ok(userProfileService.adminChangeManagerStatusCross(token,userId));
+    }
+
+    @GetMapping("/role-manager-status-inactive")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<List<UserProfile>> findRoleManagerAndStatusInactive(){
+        return ResponseEntity.ok(userProfileService.findRoleManagerAndStatusInactive());
     }
 
     @GetMapping("/find-by-userprofile-dto/{authId}")

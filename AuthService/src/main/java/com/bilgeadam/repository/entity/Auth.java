@@ -28,7 +28,6 @@ public class Auth extends Base {
     private String activationCode;
     private String password;
     private String companyName;
-    private String degree;
     private String taxNumber;
 
     @ElementCollection(targetClass = ERole.class)

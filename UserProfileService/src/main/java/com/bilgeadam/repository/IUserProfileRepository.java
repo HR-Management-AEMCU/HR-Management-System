@@ -2,6 +2,7 @@ package com.bilgeadam.repository;
 
 import com.bilgeadam.repository.entity.UserProfile;
 import com.bilgeadam.repository.enums.ERole;
+import com.bilgeadam.repository.enums.EStatus;
 import org.apache.catalina.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -20,5 +21,6 @@ public interface IUserProfileRepository extends MongoRepository<UserProfile, Str
 
     List<UserProfile> findAllByRoleAndCompanyName(ERole employee, String companyName);
 
+    List<UserProfile> findByRoleAndStatus(ERole role, EStatus status);
 
 }

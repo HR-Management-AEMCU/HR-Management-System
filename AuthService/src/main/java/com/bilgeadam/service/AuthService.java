@@ -90,6 +90,7 @@ public class AuthService extends ServiceManager<Auth, Long> {
     public RegisterResponseDto registerManager(RegisterManagerRequestDto dto){
         Auth auth = IAuthMapper.INSTANCE.fromManagerRequestDtoToAuth(dto);
         auth.setRoles(List.of(ERole.MANAGER,ERole.PERSONNEL));
+        auth.setStatus(EStatus.PENDING);
         if (dto.getPassword().equals(dto.getRepassword())){
             auth.setActivationCode(CodeGenerator.generateCode());
             auth.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -103,8 +104,6 @@ public class AuthService extends ServiceManager<Auth, Long> {
         RegisterResponseDto responseDto = IAuthMapper.INSTANCE.fromAuthToRegisterResponseDto(auth);
         return responseDto;
     }
-
-
 
     /*unzile register
     public RegisterResponseDto register(RegisterRequestDto dto) {
@@ -147,7 +146,7 @@ public class AuthService extends ServiceManager<Auth, Long> {
         if (auth.isEmpty()) {
             throw new AuthManagerException(ErrorType.USER_NOT_FOUND);
         } else if (auth.get().getActivationCode().equals(dto.getActivationCode())) {
-            auth.get().setStatus(EStatus.ACTIVE);
+            auth.get().setStatus(EStatus.INACTIVE);
             update(auth.get());
             userManager.activateStatus(auth.get().getAuthId());
             return true;
