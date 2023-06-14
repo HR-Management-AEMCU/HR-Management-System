@@ -304,7 +304,8 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         if (userProfile.isEmpty()) {
             throw new UserManagerException(ErrorType.USER_NOT_FOUND);
         }
-
+        return userProfile;
+    }
 
     //veritabanında Rolu manager olan ve Status INACTIVE olanları getiren findall metodu
     public List<UserProfile> findRoleManagerAndStatusInactive(){

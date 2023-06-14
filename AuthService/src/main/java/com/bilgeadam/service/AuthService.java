@@ -35,23 +35,22 @@ public class AuthService extends ServiceManager<Auth, Long> {
     private final PasswordEncoder passwordEncoder;
     private final MailRegisterProducer mailRegisterProducer;
     private final IEmailManager iEmailManager;
-    private final ICompanyManager iCompanyManager;
+    private final ICompanyManager companyManager;
     private final ForgotPasswordProducer forgotPasswordProducer;
 
 
     public AuthService(IAuthRepository authRepository, JwtTokenProvider jwtTokenProvider,
                        IUserProfileManager userManager, PasswordEncoder passwordEncoder,
                        MailRegisterProducer mailRegisterProducer,
-                       IEmailManager iEmailManager, ICompanyManager iCompanyManager, ForgotPasswordProducer forgotPasswordProducer) {
+                       IEmailManager iEmailManager, ICompanyManager companyManager, ForgotPasswordProducer forgotPasswordProducer) {
         super(authRepository);
         this.authRepository = authRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userManager = userManager;
         this.passwordEncoder = passwordEncoder;
         this.mailRegisterProducer = mailRegisterProducer;
-
         this.iEmailManager = iEmailManager;
-        this.iCompanyManager = iCompanyManager;
+        this.companyManager = companyManager;
         this.forgotPasswordProducer = forgotPasswordProducer;
     }
     public Boolean registerAdmin(RegisterVisitorRequestDto dto){
@@ -98,6 +97,10 @@ public class AuthService extends ServiceManager<Auth, Long> {
             NewCreateManagerUserRequestDto managerUserDto = IAuthMapper.INSTANCE.fromRegisterManagerRequestDtoToNewCreateManagerUserRequestDto(dto);
             managerUserDto.setAuthId(auth.getAuthId());
             userManager.createManagerUser(managerUserDto);
+            System.out.println(managerUserDto);
+            ManagerCompanySaveRequestDto companySaveRequestDto = IAuthMapper.INSTANCE.fromAuthToCompanyManagerSaveRequestDto(auth);
+            System.out.println(companySaveRequestDto);
+            companyManager.saveCompany(companySaveRequestDto);
         }else {
             throw new AuthManagerException(ErrorType.PASSWORD_ERROR);
         }

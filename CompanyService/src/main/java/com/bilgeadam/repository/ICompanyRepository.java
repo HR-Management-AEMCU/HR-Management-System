@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ICompanyRepository extends JpaRepository<Company,Long> {
@@ -23,5 +24,7 @@ public interface ICompanyRepository extends JpaRepository<Company,Long> {
 
     @Query("SELECT c.taxNumber FROM Company c")
     List<String> findTaxNumbers();
+
+    Optional<Company> findOptionalByAuthId(Long authId);
 
 }

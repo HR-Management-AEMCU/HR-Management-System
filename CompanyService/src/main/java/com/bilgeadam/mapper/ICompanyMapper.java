@@ -1,6 +1,8 @@
 package com.bilgeadam.mapper;
 
+import com.bilgeadam.dto.request.ManagerCompanySaveRequestDto;
 import com.bilgeadam.dto.request.SaveCompanyRequestDto;
+import com.bilgeadam.dto.response.CompanyMoneyOperationResponseDto;
 import com.bilgeadam.dto.response.ProfitLossResponseDto;
 import com.bilgeadam.dto.response.SaveCompanyResponseDto;
 import com.bilgeadam.repository.entity.Company;
@@ -18,4 +20,8 @@ public interface ICompanyMapper {
     Company fromSaveCompanyResponseDtoToCompany(final SaveCompanyRequestDto dto);
 
     SaveCompanyResponseDto fromCompanytoSaveCompanyResponseDto(final Company company);
+
+    Company fromManagerCompanySaveRequestDtoToCompany(final ManagerCompanySaveRequestDto dto);
+
+    CompanyMoneyOperationResponseDto fromCompanyToCompanyMoneyOperationRequestDto(final Company company);
 }
