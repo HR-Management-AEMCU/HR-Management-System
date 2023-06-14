@@ -45,8 +45,26 @@ public class CompanyService extends ServiceManager<Company,Long> {
                 return responseDto;
             }
         }
-        //authtan gelen companyname ve taxnumber kayıt edilmesi
-    public Boolean saveCompany(ManagerCompanySaveRequestDto dto){
+    //rolü yalnıza manager olanlar yapabilir diye kontrol etmek gerekir token role verisin cekerek
+    public Boolean update(UpdateCompanyRequestDto dto){
+        Optional<Long> authId = jwtTokenProvider.getIdFromToken(dto.getToken());
+        System.out.println(authId);
+        if (authId.isEmpty()) {
+            throw new CompanyManagerException(ErrorType.TOKEN_NOT_FOUND);
+        }
+        Optional<Company> optionalCompany=companyRepository.findOptionalByAuthId(authId.get());
+        System.out.println(optionalCompany);
+        if(optionalCompany.isEmpty()){
+            throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);
+        }else{
+            Company company = ICompanyMapper.INSTANCE.fromUpdateCompanyResponseDtoToCompany(dto,optionalCompany.get());
+            System.out.println(company);
+            update(company);
+            return true;
+        }
+    }
+    //authtan gelen companyname ve taxnumber kayıt edilmesi
+    public Boolean companySave(ManagerCompanySaveRequestDto dto){
         Company company = ICompanyMapper.INSTANCE.fromManagerCompanySaveRequestDtoToCompany(dto);
         save(company);
         return true;
@@ -102,7 +120,6 @@ public class CompanyService extends ServiceManager<Company,Long> {
             return companyRepository.findByCompanyName(text);
 
         }
-
     //ıncome utcome profitloss payment response dönen, parametrede
     //token ,içeren ve o token ile userprofile istek atıp gelen veri ile
     //userın içinden companyıd cekip onuda companyıd ye göre şirketlerin ıncome
@@ -115,14 +132,18 @@ public class CompanyService extends ServiceManager<Company,Long> {
             throw new CompanyManagerException(ErrorType.TOKEN_NOT_FOUND);
         }
         Optional<Company> company=companyRepository.findOptionalByAuthId(authId.get());
+        System.out.println(company);
         Double incomeMoney = company.get().getIncome();
         Double outcomeMoney = company.get().getOutcome();
-        Double karZararOrani=(incomeMoney/outcomeMoney)*100;
+        Double karZararOrani=(incomeMoney/outcomeMoney)*1000;
         company.get().setProfitLoss(karZararOrani);
+        company.get().setPayments(2000000D);
         System.out.println(incomeMoney+" "+outcomeMoney+" "+karZararOrani);
         update(company.get());
         CompanyMoneyOperationResponseDto companyMoneyOperationResponseDto=ICompanyMapper.INSTANCE.fromCompanyToCompanyMoneyOperationRequestDto(company.get());
         System.out.println(companyMoneyOperationResponseDto);
         return companyMoneyOperationResponseDto;
     }
-    }
+
+
+}

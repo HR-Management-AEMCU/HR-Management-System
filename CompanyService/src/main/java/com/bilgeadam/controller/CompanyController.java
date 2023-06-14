@@ -25,11 +25,15 @@ public class CompanyController {
     public ResponseEntity<SaveCompanyResponseDto> createCompany(SaveCompanyRequestDto dto){
         return ResponseEntity.ok(companyService.saveCompany(dto));
     }
+    @PostMapping(UPDATE)
+    public ResponseEntity<Boolean> update(@RequestBody UpdateCompanyRequestDto dto){
+        return ResponseEntity.ok(companyService.update(dto));
+    }
     //authtan gelen companyname ve taxnumber kayıt edilmesi
     @PostMapping("manager-save-company")
     @Hidden
-    public ResponseEntity<Boolean> saveCompany(ManagerCompanySaveRequestDto dto){
-        return ResponseEntity.ok(companyService.saveCompany(dto));
+    public ResponseEntity<Boolean> companySave(@RequestBody ManagerCompanySaveRequestDto dto){
+        return ResponseEntity.ok(companyService.companySave(dto));
     }
     @DeleteMapping(DELETE_BY_ID)
     public ResponseEntity<Boolean> deleteCompany(DeleteCompanyRequestDto dto){

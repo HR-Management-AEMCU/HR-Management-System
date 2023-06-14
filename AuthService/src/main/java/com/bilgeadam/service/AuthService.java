@@ -100,7 +100,7 @@ public class AuthService extends ServiceManager<Auth, Long> {
             System.out.println(managerUserDto);
             ManagerCompanySaveRequestDto companySaveRequestDto = IAuthMapper.INSTANCE.fromAuthToCompanyManagerSaveRequestDto(auth);
             System.out.println(companySaveRequestDto);
-            companyManager.saveCompany(companySaveRequestDto);
+            companyManager.companySave(companySaveRequestDto);
         }else {
             throw new AuthManagerException(ErrorType.PASSWORD_ERROR);
         }
