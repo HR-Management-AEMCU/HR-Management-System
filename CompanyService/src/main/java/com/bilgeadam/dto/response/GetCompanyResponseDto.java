@@ -15,5 +15,5 @@ public class GetCompanyResponseDto {
     private Long companyId;
     private String companyName;
     private String companyLogoUrl;
-    private List<String> companyDirectories;
+    //private List<String> companyDirectories;
 }

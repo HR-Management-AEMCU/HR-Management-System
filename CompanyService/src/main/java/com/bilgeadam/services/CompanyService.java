@@ -78,7 +78,7 @@ public class CompanyService extends ServiceManager<Company,Long> {
             responseDtoList.add(GetCompanyResponseDto.builder()
                     .companyName(item[1])
                     .companyLogoUrl(item[2])
-                    .companyDirectories(userProfileManager.findByCompanyName(item[0]).getBody()) // managerdan şirket direktörünün geldiği kısım
+                    //.companyDirectories(userProfileManager.findByCompanyName(item[0]).getBody()) // managerdan şirket direktörünün geldiği kısım
                     .build());
         }
         return responseDtoList;
@@ -89,7 +89,9 @@ public class CompanyService extends ServiceManager<Company,Long> {
         System.out.println(companyList);
         for (Company company : companyList) {
             responseDtoList.add(GetCompanyResponseDto.builder()
+                            .companyId(company.getCompanyId())
                             .companyName(company.getCompanyName())
+                            .companyLogoUrl(company.getCompanyLogoUrl())
                     .build());
         }
         System.out.println(responseDtoList);

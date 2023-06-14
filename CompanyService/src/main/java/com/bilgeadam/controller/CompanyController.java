@@ -44,7 +44,7 @@ public class CompanyController {
     public ResponseEntity<List<GetCompanyResponseDto>> getCompanies(){
         return ResponseEntity.ok(companyService.getCompany());
     }
-    @GetMapping(GET_COMPANIES+"list")
+    @GetMapping(GET_COMPANIES+"-list")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<List<GetCompanyResponseDto>> getCompaniesList(){
         return ResponseEntity.ok(companyService.getCompanyList());
