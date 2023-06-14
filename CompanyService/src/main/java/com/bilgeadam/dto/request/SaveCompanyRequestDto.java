@@ -24,4 +24,7 @@ public class SaveCompanyRequestDto {
     private Integer companyApartmentNumber;
     private Integer companyPostalCode;
     private Double companyBalanceStatus;
+    //gecice olarak ekrana paraları yazdırabilmek için eklendi
+    private Double income;
+    private Double outcome;
 }

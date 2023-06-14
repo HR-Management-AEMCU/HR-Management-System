@@ -5,15 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetCompanyResponseDto {
-    private Long companyId;
-    private String companyName;
-    private String companyLogoUrl;
-    //private List<String> companyDirectories;
+public class CompanyMoneyOperationResponseDto {
+    private Double income;
+    private Double outcome;
+    private Double profitLoss;
+    private Double payments;
 }

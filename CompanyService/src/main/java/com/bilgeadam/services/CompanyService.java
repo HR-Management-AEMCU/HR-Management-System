@@ -1,6 +1,7 @@
 package com.bilgeadam.services;
 
 import com.bilgeadam.dto.request.*;
+import com.bilgeadam.dto.response.CompanyMoneyOperationResponseDto;
 import com.bilgeadam.dto.response.GetCompanyResponseDto;
 import com.bilgeadam.dto.response.ProfitLossResponseDto;
 import com.bilgeadam.dto.response.SaveCompanyResponseDto;
@@ -44,6 +45,12 @@ public class CompanyService extends ServiceManager<Company,Long> {
                 return responseDto;
             }
         }
+        //authtan gelen companyname ve taxnumber kayıt edilmesi
+    public Boolean saveCompany(ManagerCompanySaveRequestDto dto){
+        Company company = ICompanyMapper.INSTANCE.fromManagerCompanySaveRequestDtoToCompany(dto);
+        save(company);
+        return true;
+    }
 
     public Boolean deleteCompanyById(DeleteCompanyRequestDto dto) {
         //companyProfitService.tokenRoleControls(dto.getToken());
@@ -65,15 +72,57 @@ public class CompanyService extends ServiceManager<Company,Long> {
         List<GetCompanyResponseDto> responseDtoList = new ArrayList<>();
         List<String[]> companyNamesAndUrls = companyRepository.findCompanyNames();
 
+        List<Company> companyList=findAll();
+        System.out.println(companyList);
         for (String[] item : companyNamesAndUrls) {
             responseDtoList.add(GetCompanyResponseDto.builder()
                     .companyName(item[1])
                     .companyLogoUrl(item[2])
-                    .companyDirectories(userProfileManager.findByCompanyName(item[0]).getBody()) // managerdan şirket direktörünün geldiği kısım
+                    //.companyDirectories(userProfileManager.findByCompanyName(item[0]).getBody()) // managerdan şirket direktörünün geldiği kısım
                     .build());
         }
         return responseDtoList;
     }
+    public List<GetCompanyResponseDto> getCompanyList() {
+        List<GetCompanyResponseDto> responseDtoList = new ArrayList<>();
+        List<Company> companyList = findAll();
+        System.out.println(companyList);
+        for (Company company : companyList) {
+            responseDtoList.add(GetCompanyResponseDto.builder()
+                            .companyId(company.getCompanyId())
+                            .companyName(company.getCompanyName())
+                            .companyLogoUrl(company.getCompanyLogoUrl())
+                    .build());
+        }
+        System.out.println(responseDtoList);
+        return responseDtoList;
+    }
 
+        public List<String> companySearch(String text){
+            return companyRepository.findByCompanyName(text);
 
+        }
+
+    //ıncome utcome profitloss payment response dönen, parametrede
+    //token ,içeren ve o token ile userprofile istek atıp gelen veri ile
+    //userın içinden companyıd cekip onuda companyıd ye göre şirketlerin ıncome
+    //outcome profitloss paymenn bilgilerini çekip responsemapper ile dönmek.
+    //ıncome bölü outcome ile profiltloss hesapla, eger personel ekleme çalışıyorsa
+    //persnolleri çek ve ondanda maaşlarını topla paymente set et.
+    public CompanyMoneyOperationResponseDto companyMoneyOperation(CompanyMoneyOperationRequestDto dto){
+        Optional<Long> authId = jwtTokenProvider.getIdFromToken(dto.getToken());
+        if (authId.isEmpty()) {
+            throw new CompanyManagerException(ErrorType.TOKEN_NOT_FOUND);
+        }
+        Optional<Company> company=companyRepository.findOptionalByAuthId(authId.get());
+        Double incomeMoney = company.get().getIncome();
+        Double outcomeMoney = company.get().getOutcome();
+        Double karZararOrani=(incomeMoney/outcomeMoney)*100;
+        company.get().setProfitLoss(karZararOrani);
+        System.out.println(incomeMoney+" "+outcomeMoney+" "+karZararOrani);
+        update(company.get());
+        CompanyMoneyOperationResponseDto companyMoneyOperationResponseDto=ICompanyMapper.INSTANCE.fromCompanyToCompanyMoneyOperationRequestDto(company.get());
+        System.out.println(companyMoneyOperationResponseDto);
+        return companyMoneyOperationResponseDto;
+    }
     }

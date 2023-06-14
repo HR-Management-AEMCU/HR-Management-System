@@ -1,5 +1,6 @@
 package com.bilgeadam.services;
 
+import com.bilgeadam.dto.request.CompanyMoneyOperationRequestDto;
 import com.bilgeadam.dto.request.CreateCommentDto;
 import com.bilgeadam.dto.response.UserProfileResponseDto;
 import com.bilgeadam.exception.CompanyManagerException;
@@ -7,6 +8,7 @@ import com.bilgeadam.exception.ErrorType;
 import com.bilgeadam.manager.IUserProfileManager;
 import com.bilgeadam.repository.ICommentRepository;
 import com.bilgeadam.repository.entity.Comment;
+import com.bilgeadam.repository.entity.Company;
 import com.bilgeadam.repository.enums.ECommentStatus;
 import com.bilgeadam.repository.enums.ERole;
 import com.bilgeadam.utility.JwtTokenProvider;

@@ -20,6 +20,7 @@ public class Company extends Base{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long companyId;
+    private Long authId;
     @Column(unique = true)
     private String companyName;
     @Column(unique = true)
@@ -37,4 +38,15 @@ public class Company extends Base{
     @ElementCollection
     @JoinTable(name = "comment", joinColumns = @JoinColumn(name = "companyId"))
     private List<Long> comments;
+
+    //gecic olarak şirket kaydolurken income ve outcome bilgilerinide girsin diye eklendi
+    private Double income;
+    private Double outcome;
+    private Double profitLoss;
+    private Double payments;
+
+
+
+
+
 }

@@ -2,10 +2,12 @@ package com.bilgeadam.services;
 
 import com.bilgeadam.dto.request.AddIncomeRequestDto;
 import com.bilgeadam.dto.request.AddOutcomeRequestDto;
+import com.bilgeadam.dto.request.CompanyMoneyOperationRequestDto;
 import com.bilgeadam.exception.CompanyManagerException;
 import com.bilgeadam.exception.ErrorType;
 import com.bilgeadam.mapper.ICompanyProfitMapper;
 import com.bilgeadam.repository.ICompanyProfitRepository;
+import com.bilgeadam.repository.entity.Company;
 import com.bilgeadam.repository.entity.CompanyProfit;
 import com.bilgeadam.repository.enums.ERole;
 import com.bilgeadam.utility.JwtTokenProvider;
