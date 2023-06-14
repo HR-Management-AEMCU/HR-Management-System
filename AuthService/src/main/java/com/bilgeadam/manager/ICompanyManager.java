@@ -20,5 +20,5 @@ public interface ICompanyManager {
     public ResponseEntity<Set<GetCompanyResponseDto>> getCompanies();
 
     @PostMapping("manager-save-company")
-    public ResponseEntity<Boolean> saveCompany(ManagerCompanySaveRequestDto dto);
+    public ResponseEntity<Boolean> companySave(ManagerCompanySaveRequestDto dto);
 }
