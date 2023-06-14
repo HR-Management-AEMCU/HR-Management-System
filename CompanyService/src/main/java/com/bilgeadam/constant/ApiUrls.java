@@ -20,4 +20,6 @@ public class ApiUrls {
 
     public static final String CREATE_COMMENT = "/create-comment";
     public static final String COMMENT_APPROVAL = "/comment-approval";
+    public static final String ADD_COMPLAINT_COMMENT = "/add-complaınt_comment";
+    public static final String CHECK_COMPLAINT_COMMENT = "/check-complaınt_comment";
 }
