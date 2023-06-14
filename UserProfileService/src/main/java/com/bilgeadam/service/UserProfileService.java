@@ -212,7 +212,26 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         }
         throw new UserManagerException(ErrorType.AUTHORIZATION_ERROR);
     }
-
+    public Boolean adminChangeManagerStatusCross(String token, String userId) {
+        Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(() -> {
+            throw new UserManagerException(ErrorType.INVALID_TOKEN);
+        });
+        Optional<UserProfile> optionalAdminProfile = userProfileRepository.findByAuthId(authId);
+        List<String> role = jwtTokenProvider.getRoleFromToken(token);
+        if (role.contains(ERole.ADMIN.toString())) {
+            if (optionalAdminProfile.isEmpty())
+                throw new UserManagerException(ErrorType.USER_NOT_FOUND);
+            Optional<UserProfile> user = findById(userId);
+            if (user.get().getRole().contains(ERole.MANAGER)) {
+                user.get().setStatus(EStatus.BANNED);
+                update(user.get());
+                authManager.updateManagerStatus(IUserProfileMapper.INSTANCE.fromUserProfileToUpdateManagerStatusRequestDto(user.get()));
+                return true;
+            }
+            throw new RuntimeException("NO MANAGER");
+        }
+        throw new UserManagerException(ErrorType.AUTHORIZATION_ERROR);
+    }
 
 
     private static final String API_BASE_URL = "https://date.nager.at/api/v3/PublicHolidays";

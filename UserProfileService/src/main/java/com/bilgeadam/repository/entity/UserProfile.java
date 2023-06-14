@@ -35,6 +35,7 @@ public class UserProfile extends Base {
     private Double salary; // TODO wage ile aynı anlamda düzelt
     private EStatus status;
     private String companyName;
+    private String taxNumber;
     @Builder.Default
     private Boolean isActivatedByAdmin = false;
 
