@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +23,10 @@ public interface ICompanyRepository extends JpaRepository<Company,Long> {
 
     @Query("SELECT c.taxNumber FROM Company c")
     List<String> findTaxNumbers();
+
+
+    @Query(value = "select t.company_id,t.company_name from tblcompany as t WHERE LOWER(t.company_name) LIKE LOWER(CONCAT('%', ?1, '%'))", nativeQuery = true)
+    List<String> findByCompanyName(String text);
 
     Optional<Company> findOptionalByAuthId(Long authId);
 

@@ -59,6 +59,9 @@ public class CompanyController {
         return ResponseEntity.ok(companyService.companyMoneyOperation(dto));
     }
 
-
+    @GetMapping(SEARCH_COMPANIES)
+    public ResponseEntity<List<String>> searchCompany(String text){
+        return ResponseEntity.ok(companyService.companySearch(text));
+    }
 
 }

@@ -17,8 +17,9 @@ public class ApiUrls {
     public static final String ADD_INCOME = "/add-income";
     public static final String ADD_OUTCOME = "/add-outcome";
     public static final String GET_COMPANIES = "/get-companies";
-
     public static final String CREATE_COMMENT = "/create-comment";
     public static final String COMMENT_APPROVAL = "/comment-approval";
+    public static final String SEARCH_COMPANIES = "/search-companies";
     public static final String COMPANY_MONEY_OPERATION = "/company-money-operation";
+
 }
