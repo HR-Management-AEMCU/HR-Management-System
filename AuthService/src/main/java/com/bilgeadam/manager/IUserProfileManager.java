@@ -1,6 +1,7 @@
 package com.bilgeadam.manager;
 
 
+import com.bilgeadam.dto.request.NewCreateAdminUserRequestDto;
 import com.bilgeadam.dto.request.NewCreateManagerUserRequestDto;
 import com.bilgeadam.dto.request.NewCreateVisitorUserRequestDto;
 import com.bilgeadam.dto.request.UserProfileChangePasswordRequestDto;
@@ -17,6 +18,8 @@ public  interface IUserProfileManager {
 
     @PostMapping("/create-visitor")
     public ResponseEntity<Boolean> createVisitorUser(@RequestBody NewCreateVisitorUserRequestDto dto);
+    @PostMapping("/create-admin")
+    public ResponseEntity<Boolean> createAdminUser(@RequestBody NewCreateAdminUserRequestDto dto);
 
     @PostMapping("/create-manager")
     public ResponseEntity<Boolean> createManagerUser(@RequestBody NewCreateManagerUserRequestDto dto);

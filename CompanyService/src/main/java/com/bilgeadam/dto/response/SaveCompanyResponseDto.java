@@ -5,15 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import javax.validation.constraints.NotBlank;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetCompanyResponseDto {
+public class SaveCompanyResponseDto {
+
     private Long companyId;
     private String companyName;
-    private String companyLogoUrl;
-    private List<String> companyDirectories;
+    private String taxNumber;
 }

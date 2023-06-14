@@ -6,13 +6,13 @@ import com.bilgeadam.exception.CompanyManagerException;
 import com.bilgeadam.exception.ErrorType;
 import com.bilgeadam.mapper.ICompanyProfitMapper;
 import com.bilgeadam.repository.ICompanyProfitRepository;
-import com.bilgeadam.repository.entity.Company;
 import com.bilgeadam.repository.entity.CompanyProfit;
 import com.bilgeadam.repository.enums.ERole;
 import com.bilgeadam.utility.JwtTokenProvider;
 import com.bilgeadam.utility.ServiceManager;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -51,16 +51,16 @@ public class CompanyProfitService extends ServiceManager<CompanyProfit,Long> {
      * @param token
      * @return role dönüşü yapıyor
      */
-    public String tokenRoleControls(String token){
+    public List<String> tokenRoleControls(String token){
         Optional<Long> authId = jwtTokenProvider.getIdFromToken(token);
         if (authId.isEmpty()) {
             throw new CompanyManagerException(ErrorType.TOKEN_NOT_FOUND);// hata düzenlenebilir
         }
-        Optional<String> role = jwtTokenProvider.getRoleFromToken(token);
-        if (!role.get().equals(ERole.DIRECTORY)) {
+        List<String> roles = jwtTokenProvider.getRoleFromToken(token);
+        if (!roles.contains(ERole.MANAGER)) {
             throw new CompanyManagerException(ErrorType.AUTHORIZATION_ERROR);
         }
-        return role.get();
+        return roles;
     }
     /**
      * her metod da aynı kontrolleri tekrar yazmamak için ekledim
@@ -72,8 +72,8 @@ public class CompanyProfitService extends ServiceManager<CompanyProfit,Long> {
         if (authId.isEmpty()) {
             throw new CompanyManagerException(ErrorType.TOKEN_NOT_FOUND);// hata düzenlenebilir
         }
-        Optional<String> role = jwtTokenProvider.getRoleFromToken(token);
-        if (!role.get().equals(ERole.DIRECTORY)) {
+        List<String> roles = jwtTokenProvider.getRoleFromToken(token);
+        if (!roles.contains(ERole.MANAGER)) {
             throw new CompanyManagerException(ErrorType.AUTHORIZATION_ERROR);
         }
         return authId.get();

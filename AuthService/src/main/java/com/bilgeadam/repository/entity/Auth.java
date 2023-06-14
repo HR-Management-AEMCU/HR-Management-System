@@ -31,7 +31,6 @@ public class Auth extends Base {
     private String degree;
     private String taxNumber;
 
-
     @ElementCollection(targetClass = ERole.class)
     @JoinTable(name = "tblRoleTypes", joinColumns = @JoinColumn(name = "authId"))
     @Column(name = "roleType", nullable = false)

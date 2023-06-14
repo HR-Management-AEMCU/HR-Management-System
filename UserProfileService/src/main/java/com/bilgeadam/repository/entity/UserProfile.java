@@ -27,6 +27,7 @@ public class UserProfile extends Base {
     private String secondName;
     private Long birthDate;
     private Long authId;
+    private Long companyId;
     private String name;
     private String surname;
     @Indexed(unique = true)
@@ -51,7 +52,6 @@ public class UserProfile extends Base {
     private Integer buildingNumber;
     private Integer apartmentNumber;
     private Integer postalCode;
-    private String companyId;
     private List<Long> employeeLeaves;
     private String department;
     private Long jobStartingDate;

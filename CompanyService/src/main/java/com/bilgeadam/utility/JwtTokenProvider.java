@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -77,7 +78,7 @@ public class JwtTokenProvider {
             return Optional.empty();
         }
     }
-    public Optional<String> getRoleFromToken(String token){
+    public List<String> getRoleFromToken(String token){
         try {
             Algorithm algorithm = Algorithm.HMAC512(secretKey);
             JWTVerifier jwtVerifier = JWT.require(algorithm)
@@ -87,12 +88,13 @@ public class JwtTokenProvider {
             if (decodedJWT == null) {
                 throw new CompanyManagerException(ErrorType.INTERNAL_ERROR); // EError type dan error ü düzelt
             }
-            String role = decodedJWT.getClaim("role").asString();
-            return Optional.of(role);
+            List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
+            return roles;
         }catch (Exception e){
             System.out.println(e.getMessage());
-            return Optional.empty();
+            System.out.println(e.getMessage());
         }
+        throw new CompanyManagerException(ErrorType.TOKEN_NOT_FOUND);
     }
     @Bean
     public PasswordEncoder passwordEncoder(){

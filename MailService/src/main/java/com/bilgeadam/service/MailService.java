@@ -3,6 +3,7 @@ package com.bilgeadam.service;
 
 import com.bilgeadam.rabbitmq.model.ForgotPasswordMailModel;
 import com.bilgeadam.rabbitmq.model.MailRegisterModel;
+import com.bilgeadam.rabbitmq.model.PersonnelPasswordModel;
 import com.bilgeadam.utility.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 
@@ -72,6 +73,20 @@ public class MailService {
         javaMailSender.send(mimeMessage);
         return "Mail Sent!";
     }*/
+    public void personnelPasswordMail(PersonnelPasswordModel model){
+        System.out.println(model);
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(model.getEmail());
+        mailMessage.setSubject("New Personnel Registration Mail");
+        mailMessage.setFrom("${spring.mail.username}");
+        mailMessage.setText("Dear User,\n" +
+                "Welcome aboard you can access our website with the information stated at the below.\n"
+                +   "email: " + model.getEmail()
+                +   "\npassword: " + model.getPassword());
+        javaMailSender.send(mailMessage);
+    }
+
+
 }
 
 

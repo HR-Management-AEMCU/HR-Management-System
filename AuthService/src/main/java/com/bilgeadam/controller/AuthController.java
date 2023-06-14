@@ -1,6 +1,7 @@
 package com.bilgeadam.controller;
 
 import com.bilgeadam.dto.request.*;
+import com.bilgeadam.dto.response.AuthCreatePersonnelProfileResponseDto;
 import com.bilgeadam.dto.response.LoginResponseDto;
 import com.bilgeadam.dto.response.RegisterResponseDto;
 import com.bilgeadam.dto.response.UpdateManagerStatusResponseDto;
@@ -105,6 +106,10 @@ public class AuthController {
     public ResponseEntity<Boolean> updateManagerStatus(@RequestBody UpdateManagerStatusResponseDto dto){
         return ResponseEntity.ok(authService.updateManagerStatus(dto));
     }
-
+    @Hidden
+    @PostMapping("/manager-create-personnel-userProfile")
+    public ResponseEntity<Long> managerCreatePersonnelUserProfile(@RequestBody AuthCreatePersonnelProfileResponseDto dto){
+        return ResponseEntity.ok(authService.managerCreatePersonnelUserProfile(dto));
+    }
 
 }

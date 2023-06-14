@@ -3,6 +3,7 @@ package com.bilgeadam.mapper;
 import com.bilgeadam.dto.request.*;
 import com.bilgeadam.dto.response.CreateEmployeeResponseDto;
 import com.bilgeadam.dto.response.ListPersonnelResponseDto;
+import com.bilgeadam.rabbitmq.model.PersonnelPasswordModel;
 import com.bilgeadam.repository.entity.UserProfile;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -15,6 +16,7 @@ public interface IUserProfileMapper {
     IUserProfileMapper INSTANCE= Mappers.getMapper(IUserProfileMapper.class);
 
     UserProfile fromNewCreateVisitorUserResponseDtoToUserProfile(final NewCreateVisitorUserRequestDto dto);
+    UserProfile fromNewCreateAdminUserResponseDtoToUserProfile(final NewCreateAdminUserRequestDto dto);
 
     UserProfile fromNewCreateManagerUserResponseDtoToUserProfile(final NewCreateManagerUserRequestDto dto);
     //UserProfile createUserRequestDtoToUserProfile(final CreateUserRequestDto dto);
@@ -23,6 +25,9 @@ public interface IUserProfileMapper {
     CreateEmployeeResponseDto userProfileToCreateEmployeeResponseDto(final UserProfile userProfile);
 
     UpdateManagerStatusRequestDto fromUserProfileToUpdateManagerStatusRequestDto(final UserProfile userProfile);
+
+    AuthCreatePersonnelProfileRequestDto fromUserProfileToAuthCreatePersonnelProfileRequestDto(final UserProfile userProfile);
+    PersonnelPasswordModel fromUserProfileToPersonnelPasswordModel(final UserProfile userProfile);
 
     //userdan listempployee döünşüm
     //ListPersonnelResponseDto fromUserProfileToListEmployeeResponseDto(final List<UserProfile> userProfile);

@@ -2,10 +2,10 @@ package com.bilgeadam.controller;
 
 import com.bilgeadam.dto.request.CreateEmployeeRequestDto;
 
+import com.bilgeadam.dto.request.NewCreateAdminUserRequestDto;
 import com.bilgeadam.dto.request.NewCreateManagerUserRequestDto;
 import com.bilgeadam.dto.request.NewCreateVisitorUserRequestDto;
 import com.bilgeadam.dto.response.CreateEmployeeResponseDto;
-import com.bilgeadam.dto.response.ListPersonnelResponseDto;
 import com.bilgeadam.repository.entity.UserProfile;
 import com.bilgeadam.service.UserProfileService;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.bilgeadam.constant.ApiUrls.*;
 
@@ -36,6 +37,11 @@ public class UserProfileController {
     @Hidden
     public ResponseEntity<Boolean> createVisitorUser(@RequestBody NewCreateVisitorUserRequestDto dto){
         return ResponseEntity.ok(userProfileService.createVisitorUser(dto));
+    }
+    @PostMapping("/create-admin")
+    @Hidden
+    public ResponseEntity<Boolean> createAdminUser(@RequestBody NewCreateAdminUserRequestDto dto){
+        return ResponseEntity.ok(userProfileService.createAdminUser(dto));
     }
 
     @PostMapping("/create-manager")
@@ -90,6 +96,11 @@ public class UserProfileController {
         return ResponseEntity.ok(userProfileService.adminChangeManagerStatus(token,userId, action));
     }
 
+    @GetMapping("/find-by-userprofile-dto/{authId}")
+    @Hidden
+    public ResponseEntity<Optional<UserProfile>> findByAuthId(@PathVariable Long authId){
+        return ResponseEntity.ok(userProfileService.findByAuthId(authId));
+    }
 
 
 

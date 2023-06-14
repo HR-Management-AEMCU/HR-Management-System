@@ -9,4 +9,6 @@ dependencies {
     implementation libs.mail
     implementation libs.springCloudConfigClient
     implementation libs.JSON
+
+   // implementation libs.springBootRabbitMQ
 }

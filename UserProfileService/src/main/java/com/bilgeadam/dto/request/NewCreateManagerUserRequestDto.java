@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 public class NewCreateManagerUserRequestDto {
     private Long authId;
     private String password;
+
+    private Long companyId;
     private String email;
     private String name;
     private String surname;

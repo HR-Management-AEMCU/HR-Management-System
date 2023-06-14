@@ -1,7 +1,7 @@
 spring:
   cloud:
     config:
-      uri: ${config-url}
+      uri: http://localhost:8888
   config:
     import: "configserver:"
   application:
