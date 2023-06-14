@@ -111,16 +111,16 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
     public CreateEmployeeResponseDto saveEmployee(CreateEmployeeRequestDto dto, String token) {
         List<String> role = jwtTokenProvider.getRoleFromToken(token);
         Optional<Long> managerId = jwtTokenProvider.getIdFromToken(token);
-        if(role.contains(ERole.MANAGER.toString())){
-        Optional<UserProfile> optionalUserProfile = userProfileRepository.findByEmail(dto.getEmail());
-        if (optionalUserProfile.isEmpty()) {
+        if (role.contains(ERole.MANAGER.toString())) {
+            Optional<UserProfile> optionalUserProfile = userProfileRepository.findByEmail(dto.getEmail());
+            if (optionalUserProfile.isEmpty()) {
                 UserProfile user = IUserProfileMapper.INSTANCE.createEmployeeRequestDtoToUserProfile(dto);
             /*if (dto.getEmail() == null || dto.getEmail() == "") {
                 String generatedEmail = normalize(dto.getName().toLowerCase()) + "." +
                         normalize(dto.getSurname().toLowerCase()) + "@" + normalize(dto.getCompanyName().toLowerCase()).replaceAll(" ", "") + ".com";
                 user.setEmail(generatedEmail);
             }*/
-            Optional<UserProfile> managerProfile = userProfileRepository.findByAuthId(managerId.get());
+                Optional<UserProfile> managerProfile = userProfileRepository.findByAuthId(managerId.get());
                 user.setPassword(passwordEncoder.encode(dto.getPassword()));
                 List<ERole> roleList = new ArrayList<>();
                 roleList.add(ERole.PERSONNEL);
@@ -131,7 +131,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
                         IUserProfileMapper.INSTANCE.fromUserProfileToAuthCreatePersonnelProfileRequestDto(user);
                 Long personnelAuthId = authManager.managerCreatePersonnelUserProfile(authDto).getBody();
                 user.setAuthId(personnelAuthId);
-                 save(user);
+                save(user);
             /*PersonnelPasswordModel personnelPasswordModel = IUserProfileMapper.INSTANCE.fromUserProfileToPersonnelPasswordModel(user);
             personnelPasswordModel.setPassword(dto.getPassword());
             personelPasswordProducer.sendPersonnelPassword(personnelPasswordModel);
@@ -142,8 +142,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             throw new UserManagerException(ErrorType.USERNAME_DUPLICATE);
         }
         throw new UserManagerException(ErrorType.AUTHORIZATION_ERROR);
-        }
-
+    }
 
 
     public Boolean deleteEmployee(String employeeId, String token) {
@@ -236,6 +235,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         }
         throw new UserManagerException(ErrorType.AUTHORIZATION_ERROR);
     }
+
     public Boolean adminChangeManagerStatusCross(String token, String userId) {
         Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(() -> {
             throw new UserManagerException(ErrorType.INVALID_TOKEN);
@@ -259,15 +259,16 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
 
 
     private static final String API_BASE_URL = "https://date.nager.at/api/v3/PublicHolidays";
-    private List<String[]>  parsePublicHolidays(String responseBody) {
-        List<String[]>  publicHolidays = new ArrayList<>();
+
+    private List<String[]> parsePublicHolidays(String responseBody) {
+        List<String[]> publicHolidays = new ArrayList<>();
         try {
             JSONArray holidaysArray = new JSONArray(responseBody);
             for (int i = 0; i < holidaysArray.length(); i++) {
                 JSONObject holidayObject = holidaysArray.getJSONObject(i);
                 String date = holidayObject.getString("date");
                 String name = holidayObject.getString("name");
-                String[] holidayData = { date, name };
+                String[] holidayData = {date, name};
                 publicHolidays.add(holidayData);
             }
         } catch (JSONException e) {
@@ -275,7 +276,8 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         }
         return publicHolidays;
     }
-    public List<String[]>  getPublicHolidays() {
+
+    public List<String[]> getPublicHolidays() {
         int currentYear = Year.now().getValue();
         String endpointUrl = API_BASE_URL + "/" + currentYear + "/TR";
         HttpClient client = HttpClient.newHttpClient();
@@ -288,7 +290,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             HttpResponse<String> response = responseFuture.get();
             if (response.statusCode() == 200) {
                 String responseBody = response.body();
-                List<String[]>  publicHolidays = parsePublicHolidays(responseBody);
+                List<String[]> publicHolidays = parsePublicHolidays(responseBody);
                 return publicHolidays;
             } else {
                 System.err.println("API request failed with status code: " + response.statusCode());
@@ -298,18 +300,21 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         }
         return new ArrayList<>();
     }
+
     //For Comment
     public Optional<UserProfile> findByAuthId(Long authId) {
         Optional<UserProfile> userProfile = userProfileRepository.findByAuthId(authId);
         if (userProfile.isEmpty()) {
             throw new UserManagerException(ErrorType.USER_NOT_FOUND);
         }
-
-
-    //veritabanında Rolu manager olan ve Status INACTIVE olanları getiren findall metodu
-    public List<UserProfile> findRoleManagerAndStatusInactive(){
-        List<UserProfile> userProfile=userProfileRepository.findByRoleAndStatus(ERole.MANAGER,EStatus.INACTIVE);
-        System.out.println(userProfile);
         return userProfile;
     }
+
+        //veritabanında Rolu manager olan ve Status INACTIVE olanları getiren findall metodu
+        public List<UserProfile> findRoleManagerAndStatusInactive () {
+            List<UserProfile> userProfile = userProfileRepository.findByRoleAndStatus(ERole.MANAGER, EStatus.INACTIVE);
+            System.out.println(userProfile);
+            return userProfile;
+        }
+
 }

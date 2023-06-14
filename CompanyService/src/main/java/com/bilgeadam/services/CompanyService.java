@@ -75,5 +75,9 @@ public class CompanyService extends ServiceManager<Company,Long> {
         return responseDtoList;
     }
 
+        public List<String> companySearch(String text){
+            return companyRepository.findByCompanyName(text);
+
+        }
 
     }

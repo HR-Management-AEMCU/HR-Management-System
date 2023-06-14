@@ -4,6 +4,7 @@ import com.bilgeadam.dto.request.*;
 import com.bilgeadam.dto.response.GetCompanyResponseDto;
 import com.bilgeadam.dto.response.ProfitLossResponseDto;
 import com.bilgeadam.dto.response.SaveCompanyResponseDto;
+import com.bilgeadam.repository.entity.Company;
 import com.bilgeadam.services.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,9 @@ public class CompanyController {
         return ResponseEntity.ok(companyService.getCompany());
     }
 
-
+    @GetMapping(SEARCH_COMPANIES)
+    public ResponseEntity<List<String>> searchCompany(String text){
+        return ResponseEntity.ok(companyService.companySearch(text));
+    }
 
 }
