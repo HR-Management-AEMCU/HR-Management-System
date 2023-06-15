@@ -59,7 +59,8 @@ public class CompanyController {
         return ResponseEntity.ok(companyService.findAll());
     }
     @PostMapping(COMPANY_MONEY_OPERATION)
-    public ResponseEntity<CompanyMoneyOperationResponseDto> companyMoneyOperation(CompanyMoneyOperationRequestDto dto){
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<CompanyMoneyOperationResponseDto> companyMoneyOperation(@RequestBody CompanyMoneyOperationRequestDto dto){
         return ResponseEntity.ok(companyService.companyMoneyOperation(dto));
     }
 

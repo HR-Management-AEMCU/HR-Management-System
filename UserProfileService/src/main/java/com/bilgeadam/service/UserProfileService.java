@@ -3,6 +3,7 @@ package com.bilgeadam.service;
 
 import com.bilgeadam.dto.request.*;
 import com.bilgeadam.dto.response.CreateEmployeeResponseDto;
+import com.bilgeadam.dto.response.InfoVisitorResponseDto;
 import com.bilgeadam.exception.ErrorType;
 import com.bilgeadam.exception.UserManagerException;
 import com.bilgeadam.manager.IAuthManager;
@@ -318,7 +319,49 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
 
         return userProfile;
     }
+    //upsadateVisitor metodu--> register olurken giremediği bilgileri update metoduyla girebiilir
+    public Boolean updateVisitor(UpdateVisitorRequestDto dto){
+        Optional<Long> authId = jwtTokenProvider.getIdFromToken(dto.getToken());
+        System.out.println(authId);
+        if (authId.isEmpty()) {
+            throw new UserManagerException(ErrorType.INVALID_TOKEN);
+        }
+        Optional<UserProfile> optionalUser=userProfileRepository.findByAuthId(authId.get());
+        if (optionalUser.isEmpty()) {
+            throw new UserManagerException(ErrorType.USER_NOT_FOUND);
+        }
+        List<String> role = jwtTokenProvider.getRoleFromToken(dto.getToken());
+        if (role.contains(ERole.VISITOR.toString())) {
+            UserProfile user=IUserProfileMapper.INSTANCE.fromUpdateVisitorRequestDtoToUserProfile(dto,optionalUser.get());
+            System.out.println(user);
+            update(user);
+            return true;
+        }
+        throw new UserManagerException(ErrorType.UPDATE_ROL_ERROR);
+    }
+    //task28 profil kartı oluşturmak için role=visitor olup tokendaki id ile bilgilerinin çekilmesi
+    public InfoVisitorResponseDto infoProfileVisitor(InfoVisitorRequestDto dto){
+        Optional<Long> authId = jwtTokenProvider.getIdFromToken(dto.getToken());
+        System.out.println(authId);
+        if (authId.isEmpty()) {
+            throw new UserManagerException(ErrorType.INVALID_TOKEN);
+        }
+        Optional<UserProfile> optionalUser=userProfileRepository.findByAuthId(authId.get());
+        if (optionalUser.isEmpty()) {
+            throw new UserManagerException(ErrorType.USER_NOT_FOUND);
+        }
+        InfoVisitorResponseDto ınfoVisitor=IUserProfileMapper.INSTANCE.fromUserPRofileToInfoVisitorResponseDto(optionalUser.get());
+        return ınfoVisitor;
+    }
 
       
+
+
+
+
+
+
+
+
 
 }

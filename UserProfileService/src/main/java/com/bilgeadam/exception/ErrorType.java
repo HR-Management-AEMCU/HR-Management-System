@@ -20,6 +20,7 @@ public enum ErrorType {
     ROLE_ERROR(4800,"Bu işlemi sadece manager rolüne sahip kişiler gerçekleştirebilir",HttpStatus.BAD_REQUEST),
     EMPLOYEE_NOT_FOUND(4900,"Böyle bir çalışan bulunmamaktadır.",HttpStatus.BAD_REQUEST),
     DIRECTORY_ERROR(5000,"Bu işlemi sadece o çalışanın firma yöneticisi gerçekleştirebilir",HttpStatus.BAD_REQUEST),
+    UPDATE_ROL_ERROR(5200,"VisitorUpdate işlemini sadece visitor gerçekleştirebilir",HttpStatus.BAD_REQUEST),
     AUTHORIZATION_ERROR(4200,"You're not authorized to do this.", HttpStatus.BAD_REQUEST);
     private int code;
     private String message;

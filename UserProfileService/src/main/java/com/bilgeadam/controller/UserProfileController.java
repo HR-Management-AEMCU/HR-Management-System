@@ -1,11 +1,9 @@
 package com.bilgeadam.controller;
 
-import com.bilgeadam.dto.request.CreateEmployeeRequestDto;
+import com.bilgeadam.dto.request.*;
 
-import com.bilgeadam.dto.request.NewCreateAdminUserRequestDto;
-import com.bilgeadam.dto.request.NewCreateManagerUserRequestDto;
-import com.bilgeadam.dto.request.NewCreateVisitorUserRequestDto;
 import com.bilgeadam.dto.response.CreateEmployeeResponseDto;
+import com.bilgeadam.dto.response.InfoVisitorResponseDto;
 import com.bilgeadam.repository.entity.UserProfile;
 import com.bilgeadam.service.UserProfileService;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -113,6 +111,19 @@ public class UserProfileController {
     public ResponseEntity<Optional<UserProfile>> findByAuthId(@PathVariable Long authId){
         return ResponseEntity.ok(userProfileService.findByAuthId(authId));
     }
+    //update metodu için
+    @PostMapping(UPDATE_VISITOR)
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<Boolean> updateVisitor(@RequestBody UpdateVisitorRequestDto dto){
+        return ResponseEntity.ok(userProfileService.updateVisitor(dto));
+    }
+    //infoProfileVisitor
+    @PostMapping(INFO_VISITOR)
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<InfoVisitorResponseDto> infoProfileVisitor(@RequestBody InfoVisitorRequestDto dto){
+        return ResponseEntity.ok(userProfileService.infoProfileVisitor(dto));
+    }
+
 
 
 
