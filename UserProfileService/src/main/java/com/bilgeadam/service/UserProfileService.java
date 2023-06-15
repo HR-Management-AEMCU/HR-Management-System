@@ -3,7 +3,6 @@ package com.bilgeadam.service;
 
 import com.bilgeadam.dto.request.*;
 import com.bilgeadam.dto.response.CreateEmployeeResponseDto;
-import com.bilgeadam.dto.response.InfoVisitorResponseDto;
 import com.bilgeadam.exception.ErrorType;
 import com.bilgeadam.exception.UserManagerException;
 import com.bilgeadam.manager.IAuthManager;
@@ -354,7 +353,6 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         return ınfoVisitor;
     }
 
-      
 
 
 
@@ -363,5 +361,24 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
 
 
 
+    public Boolean managerChangeRole(String token, String userId) {
+        List<String> userRole = jwtTokenProvider.getRoleFromToken(token);
+        if (userRole.isEmpty()) {
+            throw new UserManagerException(ErrorType.USER_NOT_FOUND);
+        }
+        UserProfile userProfile = findById(userId).orElseThrow(() -> new UserManagerException(ErrorType.USER_NOT_FOUND));
+        if (userRole.contains(ERole.MANAGER.toString())) {
+            List<ERole> personnelRoleList = new ArrayList<>();
+            personnelRoleList.add(ERole.PERSONNEL);
+            System.out.println(personnelRoleList);
+            userProfile.setRole(personnelRoleList);
+            userProfileRepository.save(userProfile);
+            return true;
 
+        }
+        throw new UserManagerException(ErrorType.USER_NOT_MANAGER);
+
+
+
+    }
 }
