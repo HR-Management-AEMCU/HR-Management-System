@@ -2,11 +2,11 @@ package com.bilgeadam.mapper;
 
 import com.bilgeadam.dto.request.*;
 import com.bilgeadam.dto.response.CreateEmployeeResponseDto;
+import com.bilgeadam.dto.response.InfoVisitorResponseDto;
 import com.bilgeadam.dto.response.ListPersonnelResponseDto;
 import com.bilgeadam.rabbitmq.model.PersonnelPasswordModel;
 import com.bilgeadam.repository.entity.UserProfile;
-import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -28,6 +28,13 @@ public interface IUserProfileMapper {
 
     AuthCreatePersonnelProfileRequestDto fromUserProfileToAuthCreatePersonnelProfileRequestDto(final UserProfile userProfile);
     PersonnelPasswordModel fromUserProfileToPersonnelPasswordModel(final UserProfile userProfile);
+
+    //update metodu için
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    UserProfile fromUpdateVisitorRequestDtoToUserProfile(final UpdateVisitorRequestDto dto, @MappingTarget UserProfile userProfile);
+
+    //infoProfileVisitor için responseDto dönüşüm metodu
+    InfoVisitorResponseDto fromUserPRofileToInfoVisitorResponseDto(final UserProfile userProfile);
 
     //userdan listempployee döünşüm
     //ListPersonnelResponseDto fromUserProfileToListEmployeeResponseDto(final List<UserProfile> userProfile);

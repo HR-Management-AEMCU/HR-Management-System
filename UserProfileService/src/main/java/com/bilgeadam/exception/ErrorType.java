@@ -22,6 +22,8 @@ public enum ErrorType {
     DIRECTORY_ERROR(5000,"Bu işlemi sadece o çalışanın firma yöneticisi gerçekleştirebilir",HttpStatus.BAD_REQUEST),
     AUTHORIZATION_ERROR(4200,"You're not authorized to do this.", HttpStatus.BAD_REQUEST),
     USER_NOT_MANAGER(4201,"This user is not Manager", HttpStatus.BAD_REQUEST);
+    UPDATE_ROL_ERROR(5200,"VisitorUpdate işlemini sadece visitor gerçekleştirebilir",HttpStatus.BAD_REQUEST),
+    AUTHORIZATION_ERROR(4200,"You're not authorized to do this.", HttpStatus.BAD_REQUEST);
     private int code;
     private String message;
     HttpStatus httpStatus;

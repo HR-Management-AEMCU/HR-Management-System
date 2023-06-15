@@ -15,6 +15,7 @@ import com.bilgeadam.utility.JwtTokenProvider;
 import com.bilgeadam.utility.ServiceManager;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -135,7 +136,7 @@ public class CompanyService extends ServiceManager<Company,Long> {
         System.out.println(company);
         Double incomeMoney = company.get().getIncome();
         Double outcomeMoney = company.get().getOutcome();
-        Double karZararOrani=(incomeMoney/outcomeMoney)*1000;
+        Double karZararOrani=(incomeMoney/outcomeMoney)*100;
         company.get().setProfitLoss(karZararOrani);
         company.get().setPayments(2000000D);
         System.out.println(incomeMoney+" "+outcomeMoney+" "+karZararOrani);
