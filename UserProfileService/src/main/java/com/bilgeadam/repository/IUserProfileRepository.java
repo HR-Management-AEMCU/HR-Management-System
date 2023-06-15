@@ -23,4 +23,6 @@ public interface IUserProfileRepository extends MongoRepository<UserProfile, Str
 
     List<UserProfile> findByRoleAndStatus(ERole role, EStatus status);
 
+
+
 }

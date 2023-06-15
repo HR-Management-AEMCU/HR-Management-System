@@ -113,6 +113,10 @@ public class UserProfileController {
     public ResponseEntity<Optional<UserProfile>> findByAuthId(@PathVariable Long authId){
         return ResponseEntity.ok(userProfileService.findByAuthId(authId));
     }
+    @PostMapping("/manager-change-role")
+    public ResponseEntity<Boolean> managerChangeRole(String token, String userId){
+        return ResponseEntity.ok(userProfileService.managerChangeRole(token, userId));
+    }
 
 
 

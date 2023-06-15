@@ -312,13 +312,30 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
     }
 
     //veritabanında Rolu manager olan ve Status INACTIVE olanları getiren findall metodu
-    public List<UserProfile> findRoleManagerAndStatusInactive(){
-        List<UserProfile> userProfile=userProfileRepository.findByRoleAndStatus(ERole.MANAGER,EStatus.INACTIVE);
+    public List<UserProfile> findRoleManagerAndStatusInactive() {
+        List<UserProfile> userProfile = userProfileRepository.findByRoleAndStatus(ERole.MANAGER, EStatus.INACTIVE);
         System.out.println(userProfile);
 
         return userProfile;
     }
 
-      
+    public Boolean managerChangeRole(String token, String userId) {
+        List<String> userRole = jwtTokenProvider.getRoleFromToken(token);
+        if (userRole.isEmpty()) {
+            throw new UserManagerException(ErrorType.USER_NOT_FOUND);
+        }
+        UserProfile userProfile = findById(userId).orElseThrow(() -> new UserManagerException(ErrorType.USER_NOT_FOUND));
+        if (userRole.contains(ERole.MANAGER.toString())) {
+            List<ERole> personnelRoleList = new ArrayList<>();
+            personnelRoleList.add(ERole.PERSONNEL);
+            System.out.println(personnelRoleList);
+            userProfile.setRole(personnelRoleList);
+            userProfileRepository.save(userProfile);
+            return true;
 
+        }
+        throw new UserManagerException(ErrorType.USER_NOT_MANAGER);
+
+
+    }
 }
