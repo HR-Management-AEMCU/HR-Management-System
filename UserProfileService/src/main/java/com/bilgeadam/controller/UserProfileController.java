@@ -1,11 +1,9 @@
 package com.bilgeadam.controller;
 
-import com.bilgeadam.dto.request.CreateEmployeeRequestDto;
+import com.bilgeadam.dto.request.*;
 
-import com.bilgeadam.dto.request.NewCreateAdminUserRequestDto;
-import com.bilgeadam.dto.request.NewCreateManagerUserRequestDto;
-import com.bilgeadam.dto.request.NewCreateVisitorUserRequestDto;
 import com.bilgeadam.dto.response.CreateEmployeeResponseDto;
+import com.bilgeadam.dto.response.InfoVisitorResponseDto;
 import com.bilgeadam.repository.entity.UserProfile;
 import com.bilgeadam.service.UserProfileService;
 import io.swagger.v3.oas.annotations.Hidden;
