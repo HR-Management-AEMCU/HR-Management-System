@@ -3,6 +3,7 @@ package com.bilgeadam.controller;
 import com.bilgeadam.dto.request.*;
 
 import com.bilgeadam.dto.response.CreateEmployeeResponseDto;
+import com.bilgeadam.dto.response.InfoPersonelResponseDto;
 import com.bilgeadam.dto.response.InfoVisitorResponseDto;
 import com.bilgeadam.repository.entity.UserProfile;
 import com.bilgeadam.service.UserProfileService;
@@ -130,6 +131,12 @@ public class UserProfileController {
     @PostMapping(ADMIN_MANAGER_APPROVAL+ "/{token}")
     public ResponseEntity<Boolean> adminManagerApproval(@PathVariable String token, String userId, Boolean action){
         return ResponseEntity.ok(userProfileService.adminManagerApproval(token, userId, action));
+    }
+
+    @PostMapping(INFO_PERSONEL)
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<InfoPersonelResponseDto> infoProfilePersonel(@RequestBody InfoPersonelRequestDto dto){
+        return ResponseEntity.ok(userProfileService.infoProfilePersonel(dto));
     }
 
 

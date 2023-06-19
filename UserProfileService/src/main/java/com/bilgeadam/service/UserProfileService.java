@@ -3,6 +3,7 @@ package com.bilgeadam.service;
 
 import com.bilgeadam.dto.request.*;
 import com.bilgeadam.dto.response.CreateEmployeeResponseDto;
+import com.bilgeadam.dto.response.InfoPersonelResponseDto;
 import com.bilgeadam.dto.response.InfoVisitorResponseDto;
 import com.bilgeadam.exception.ErrorType;
 import com.bilgeadam.exception.UserManagerException;
@@ -354,6 +355,20 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         }
         InfoVisitorResponseDto ınfoVisitor = IUserProfileMapper.INSTANCE.fromUserPRofileToInfoVisitorResponseDto(optionalUser.get());
         return ınfoVisitor;
+    }
+
+    public InfoPersonelResponseDto infoProfilePersonel(InfoPersonelRequestDto dto) {
+        Optional<Long> authId = jwtTokenProvider.getIdFromToken(dto.getToken());
+        System.out.println(authId);
+        if (authId.isEmpty()) {
+            throw new UserManagerException(ErrorType.INVALID_TOKEN);
+        }
+        Optional<UserProfile> optionalUser = userProfileRepository.findByAuthId(authId.get());
+        if (optionalUser.isEmpty()) {
+            throw new UserManagerException(ErrorType.USER_NOT_FOUND);
+        }
+        InfoPersonelResponseDto ınfoPersonel = IUserProfileMapper.INSTANCE.fromUserPRofileToInfoPersonelResponseDto(optionalUser.get());
+        return ınfoPersonel;
     }
 
     public Boolean managerChangeRole(String token, String userId) {
