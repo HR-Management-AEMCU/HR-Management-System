@@ -69,4 +69,10 @@ public class CompanyController {
         return ResponseEntity.ok(companyService.companySearch(text));
     }
 
+    @GetMapping("/company/{id}")
+    public ResponseEntity<GetCompanyResponseDto> getAllInfoCompany(@PathVariable Long id) {
+        GetCompanyResponseDto companyResponseDto = companyService.getCompanyWithId(id);
+        return ResponseEntity.ok(companyResponseDto);
+    }
+
 }

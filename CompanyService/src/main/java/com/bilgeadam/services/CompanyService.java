@@ -146,5 +146,23 @@ public class CompanyService extends ServiceManager<Company,Long> {
         return companyMoneyOperationResponseDto;
     }
 
+    public GetCompanyResponseDto getCompanyWithId(Long id) {
+        Optional<Company> company = companyRepository.findById(id);
+
+        if (company == null) {
+            // Şirket bulunamadı durumunda uygun bir hata işleme mekanizması ekleyebilirsiniz.
+            throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);
+        }
+
+        GetCompanyResponseDto responseDto = GetCompanyResponseDto.builder()
+                .companyId(company.get().getCompanyId())
+                .companyName(company.get().getCompanyName())
+                .companyLogoUrl(company.get().getCompanyLogoUrl())
+                //.companyDirectories(userProfileManager.findByCompanyName(company.getCompanyName()).getBody())
+                .build();
+
+        return responseDto;
+    }
+
 
 }
