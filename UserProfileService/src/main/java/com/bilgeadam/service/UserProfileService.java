@@ -313,46 +313,49 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
     }
 
     //veritabanında Rolu manager olan ve Status INACTIVE olanları getiren findall metodu
-    public List<UserProfile> findRoleManagerAndStatusInactive(){
-        List<UserProfile> userProfile=userProfileRepository.findByRoleAndStatus(ERole.MANAGER,EStatus.INACTIVE);
+    public List<UserProfile> findRoleManagerAndStatusInactive() {
+        List<UserProfile> userProfile = userProfileRepository.findByRoleAndStatus(ERole.MANAGER, EStatus.INACTIVE);
         System.out.println(userProfile);
 
         return userProfile;
     }
+
     //upsadateVisitor metodu--> register olurken giremediği bilgileri update metoduyla girebiilir
-    public Boolean updateVisitor(UpdateVisitorRequestDto dto){
+    public Boolean updateVisitor(UpdateVisitorRequestDto dto) {
         Optional<Long> authId = jwtTokenProvider.getIdFromToken(dto.getToken());
         System.out.println(authId);
         if (authId.isEmpty()) {
             throw new UserManagerException(ErrorType.INVALID_TOKEN);
         }
-        Optional<UserProfile> optionalUser=userProfileRepository.findByAuthId(authId.get());
+        Optional<UserProfile> optionalUser = userProfileRepository.findByAuthId(authId.get());
         if (optionalUser.isEmpty()) {
             throw new UserManagerException(ErrorType.USER_NOT_FOUND);
         }
         List<String> role = jwtTokenProvider.getRoleFromToken(dto.getToken());
         if (role.contains(ERole.VISITOR.toString())) {
-            UserProfile user=IUserProfileMapper.INSTANCE.fromUpdateVisitorRequestDtoToUserProfile(dto,optionalUser.get());
+            UserProfile user = IUserProfileMapper.INSTANCE.fromUpdateVisitorRequestDtoToUserProfile(dto, optionalUser.get());
             System.out.println(user);
             update(user);
             return true;
         }
         throw new UserManagerException(ErrorType.UPDATE_ROL_ERROR);
     }
+
     //task28 profil kartı oluşturmak için role=visitor olup tokendaki id ile bilgilerinin çekilmesi
-    public InfoVisitorResponseDto infoProfileVisitor(InfoVisitorRequestDto dto){
+    public InfoVisitorResponseDto infoProfileVisitor(InfoVisitorRequestDto dto) {
         Optional<Long> authId = jwtTokenProvider.getIdFromToken(dto.getToken());
         System.out.println(authId);
         if (authId.isEmpty()) {
             throw new UserManagerException(ErrorType.INVALID_TOKEN);
         }
-        Optional<UserProfile> optionalUser=userProfileRepository.findByAuthId(authId.get());
+        Optional<UserProfile> optionalUser = userProfileRepository.findByAuthId(authId.get());
         if (optionalUser.isEmpty()) {
             throw new UserManagerException(ErrorType.USER_NOT_FOUND);
         }
-        InfoVisitorResponseDto ınfoVisitor=IUserProfileMapper.INSTANCE.fromUserPRofileToInfoVisitorResponseDto(optionalUser.get());
+        InfoVisitorResponseDto ınfoVisitor = IUserProfileMapper.INSTANCE.fromUserPRofileToInfoVisitorResponseDto(optionalUser.get());
         return ınfoVisitor;
     }
+
     public Boolean managerChangeRole(String token, String userId) {
         List<String> userRole = jwtTokenProvider.getRoleFromToken(token);
         if (userRole.isEmpty()) {
@@ -367,5 +370,25 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             return true;
         }
         throw new UserManagerException(ErrorType.USER_NOT_MANAGER);
+    }
+
+    public Boolean adminManagerApproval(String token, String userId, Boolean action) {
+        List<String> adminRole = jwtTokenProvider.getRoleFromToken(token);
+        System.out.println(adminRole.stream().toList());
+        if (adminRole.contains(ERole.ADMIN.toString())) {
+            Optional<UserProfile> optionalUserProfile = userProfileRepository.findById(userId);
+            if (optionalUserProfile.isPresent()) {
+                UserProfile userProfile = optionalUserProfile.get();
+                if (action) {
+                    userProfile.setStatus(EStatus.ACTIVE);
+                } else {
+                    userProfile.setStatus(EStatus.INACTIVE);
+                }
+                userProfileRepository.save(userProfile);
+                return true;
+            }
+            throw new UserManagerException(ErrorType.USER_NOT_FOUND);
+        }
+        throw new UserManagerException(ErrorType.AUTHORIZATION_ERROR);
     }
 }

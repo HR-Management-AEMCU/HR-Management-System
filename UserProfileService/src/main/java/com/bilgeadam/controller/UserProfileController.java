@@ -127,6 +127,10 @@ public class UserProfileController {
     public ResponseEntity<InfoVisitorResponseDto> infoProfileVisitor(@RequestBody InfoVisitorRequestDto dto){
         return ResponseEntity.ok(userProfileService.infoProfileVisitor(dto));
     }
+    @PostMapping(ADMIN_MANAGER_APPROVAL+ "/{token}")
+    public ResponseEntity<Boolean> adminManagerApproval(@PathVariable String token, String userId, Boolean action){
+        return ResponseEntity.ok(userProfileService.adminManagerApproval(token, userId, action));
+    }
 
 
 
