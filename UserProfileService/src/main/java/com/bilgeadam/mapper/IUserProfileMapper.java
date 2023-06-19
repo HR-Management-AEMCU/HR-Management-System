@@ -2,14 +2,12 @@ package com.bilgeadam.mapper;
 
 import com.bilgeadam.dto.request.*;
 import com.bilgeadam.dto.response.CreateEmployeeResponseDto;
+import com.bilgeadam.dto.response.InfoPersonelResponseDto;
 import com.bilgeadam.dto.response.InfoVisitorResponseDto;
-import com.bilgeadam.dto.response.ListPersonnelResponseDto;
 import com.bilgeadam.rabbitmq.model.PersonnelPasswordModel;
 import com.bilgeadam.repository.entity.UserProfile;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
-
-import java.util.List;
 
 @Mapper(componentModel = "spring",unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface IUserProfileMapper {
@@ -38,4 +36,8 @@ public interface IUserProfileMapper {
 
     //userdan listempployee döünşüm
     //ListPersonnelResponseDto fromUserProfileToListEmployeeResponseDto(final List<UserProfile> userProfile);
+
+    InfoPersonelResponseDto fromUserPRofileToInfoPersonelResponseDto(final UserProfile userProfile);
+
+
 }
