@@ -361,12 +361,10 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         UserProfile userProfile = findById(userId).orElseThrow(() -> new UserManagerException(ErrorType.USER_NOT_FOUND));
         if (userRole.contains(ERole.MANAGER.toString())) {
             List<ERole> personnelRoleList = new ArrayList<>();
-            personnelRoleList.add(ERole.PERSONNEL);
-            System.out.println(personnelRoleList);
+            personnelRoleList.remove(ERole.MANAGER);
             userProfile.setRole(personnelRoleList);
             userProfileRepository.save(userProfile);
             return true;
-
         }
         throw new UserManagerException(ErrorType.USER_NOT_MANAGER);
     }
