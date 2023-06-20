@@ -343,6 +343,26 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         }
         throw new UserManagerException(ErrorType.UPDATE_ROL_ERROR);
     }
+    //upsadatePersonnel metodu--> bu metotta name surname password değiştirme gidi işler eklencekse authserviceyede gitmeli bilgiler.
+    public Boolean updatePersonnel(UpdatePersonnelRequestDto dto) {
+        Optional<Long> authId = jwtTokenProvider.getIdFromToken(dto.getToken());
+        System.out.println(authId);
+        if (authId.isEmpty()) {
+            throw new UserManagerException(ErrorType.INVALID_TOKEN);
+        }
+        Optional<UserProfile> optionalUser = userProfileRepository.findByAuthId(authId.get());
+        if (optionalUser.isEmpty()) {
+            throw new UserManagerException(ErrorType.USER_NOT_FOUND);
+        }
+        List<String> role = jwtTokenProvider.getRoleFromToken(dto.getToken());
+        if (role.contains(ERole.PERSONNEL.toString())) {
+            UserProfile user = IUserProfileMapper.INSTANCE.fromUpdatePersonnelRequestDtoToUserProfile(dto, optionalUser.get());
+            System.out.println(user);
+            update(user);
+            return true;
+        }
+        throw new UserManagerException(ErrorType.UPDATE_ROL_ERROR);
+    }
 
     //task28 profil kartı oluşturmak için role=visitor olup tokendaki id ile bilgilerinin çekilmesi
     public InfoVisitorResponseDto infoProfileVisitor(InfoVisitorRequestDto dto) {
@@ -355,8 +375,13 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         if (optionalUser.isEmpty()) {
             throw new UserManagerException(ErrorType.USER_NOT_FOUND);
         }
-        InfoVisitorResponseDto ınfoVisitor = IUserProfileMapper.INSTANCE.fromUserPRofileToInfoVisitorResponseDto(optionalUser.get());
-        return ınfoVisitor;
+        List<String> role = jwtTokenProvider.getRoleFromToken(dto.getToken());
+        if (role.contains(ERole.VISITOR.toString())) {
+            InfoVisitorResponseDto infoVisitor = IUserProfileMapper.INSTANCE.fromUserPRofileToInfoVisitorResponseDto(optionalUser.get());
+            return infoVisitor;
+        }else {
+            throw new UserManagerException(ErrorType.ROLE_NOT_VISITOR);
+        }
     }
 
     public InfoPersonelResponseDto infoProfilePersonel(InfoPersonelRequestDto dto) {
@@ -366,11 +391,18 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             throw new UserManagerException(ErrorType.INVALID_TOKEN);
         }
         Optional<UserProfile> optionalUser = userProfileRepository.findByAuthId(authId.get());
+        System.out.println(optionalUser);
         if (optionalUser.isEmpty()) {
             throw new UserManagerException(ErrorType.USER_NOT_FOUND);
         }
-        InfoPersonelResponseDto ınfoPersonel = IUserProfileMapper.INSTANCE.fromUserPRofileToInfoPersonelResponseDto(optionalUser.get());
-        return ınfoPersonel;
+        System.out.println(optionalUser.get().getRoles());
+        List<String> role = jwtTokenProvider.getRoleFromToken(dto.getToken());
+        if (role.contains(ERole.PERSONNEL.toString())) {
+            InfoPersonelResponseDto infoPersonel = IUserProfileMapper.INSTANCE.fromUserPRofileToInfoPersonelResponseDto(optionalUser.get());
+            return infoPersonel;
+        }else {
+            throw new UserManagerException(ErrorType.ROLE_NOT_PERSONNEL);
+        }
     }
 
     public Boolean managerChangeRole(String token, String userId) {

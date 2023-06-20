@@ -52,7 +52,9 @@ public class AuthController {
     public ResponseEntity<List<Auth>> findAll() {
         return ResponseEntity.ok(authService.findAll());
     }
+
     @PostMapping(ACTIVATE_STATUS)
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<Boolean> activateStatus(@RequestBody ActivateRequestDto dto){
         return ResponseEntity.ok(authService.activateStatus(dto));
     }
