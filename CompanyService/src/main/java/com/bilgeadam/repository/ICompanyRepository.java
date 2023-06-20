@@ -26,7 +26,9 @@ public interface ICompanyRepository extends JpaRepository<Company,Long> {
 
 
     @Query(value = "select t.company_id,t.company_name from tblcompany as t WHERE LOWER(t.company_name) LIKE LOWER(CONCAT('%', ?1, '%'))", nativeQuery = true)
-    List<String> findByCompanyName(String text);
+    List<Company> findByCompanyName(String text);
+
+    List<Company> findByCompanyNameStartingWithIgnoreCase(String text);
 
     Optional<Company> findOptionalByAuthId(Long authId);
 
