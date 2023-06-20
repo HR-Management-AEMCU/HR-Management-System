@@ -7,9 +7,7 @@ import com.bilgeadam.services.CompanyProfitService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.bilgeadam.constant.ApiUrls.*;
 import static com.bilgeadam.constant.ApiUrls.ADD_OUTCOME;
@@ -26,5 +24,10 @@ public class CompanyProfitController {
     @PostMapping(ADD_OUTCOME)
     public ResponseEntity<CompanyProfit> addOutcome(AddOutcomeRequestDto dto){
         return ResponseEntity.ok(companyProfitService.addOutcome(dto));
+    }
+    @GetMapping(GET_SALARIES)
+    @CrossOrigin(origins = "*",allowedHeaders = "*")
+    public ResponseEntity<Double> companyTotalSalaries(String token){
+        return ResponseEntity.ok(companyProfitService.companyTotalSalaries(token));
     }
 }

@@ -15,5 +15,8 @@ public interface IUserProfileManager {
 
     @GetMapping("/find-by-userprofile-dto/{authId}")
     public ResponseEntity<UserProfileResponseDto> findByUserProfileDto(@PathVariable Long authId);
+
+    @GetMapping("/list-for-salary/{token}")
+    public ResponseEntity<List<Double>> getEmployeeListforSalary(@PathVariable String token);
 }
 
