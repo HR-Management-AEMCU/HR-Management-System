@@ -117,10 +117,12 @@ public class CompanyService extends ServiceManager<Company,Long> {
         return responseDtoList;
     }
 
-        public List<String> companySearch(String text){
-            return companyRepository.findByCompanyName(text);
-
+        public List<Company> companySearch(String text){
+            List<Company> company = companyRepository.findByCompanyNameStartingWithIgnoreCase(text);
+            System.out.println(company);
+            return company;
         }
+
     //ıncome utcome profitloss payment response dönen, parametrede
     //token ,içeren ve o token ile userprofile istek atıp gelen veri ile
     //userın içinden companyıd cekip onuda companyıd ye göre şirketlerin ıncome

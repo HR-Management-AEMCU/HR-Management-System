@@ -65,7 +65,8 @@ public class CompanyController {
     }
 
     @GetMapping(SEARCH_COMPANIES)
-    public ResponseEntity<List<String>> searchCompany(String text){
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<List<Company>> searchCompany(String text){
         return ResponseEntity.ok(companyService.companySearch(text));
     }
 
