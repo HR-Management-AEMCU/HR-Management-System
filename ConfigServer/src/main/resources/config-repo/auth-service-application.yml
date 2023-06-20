@@ -35,3 +35,5 @@ rabbitmq:
   forgotPasswordMailBindingKey: forgot-password-mail-key
   queueResetPassword: reset-password-mail-queue
   resetPasswordMailBindingKey:  reset-password-mail-key
+  managerActivateQueue: manager-activate-status
+  managerActivateQueueBindingKey : managerActivateQueueBindingKey

@@ -11,8 +11,10 @@ import com.bilgeadam.manager.ICompanyManager;
 import com.bilgeadam.manager.IEmailManager;
 import com.bilgeadam.mapper.IAuthMapper;
 import com.bilgeadam.rabbitmq.model.ForgotPasswordMailModel;
+import com.bilgeadam.rabbitmq.model.ManagerActivateStatusModel;
 import com.bilgeadam.rabbitmq.producer.ForgotPasswordProducer;
 import com.bilgeadam.rabbitmq.producer.MailRegisterProducer;
+import com.bilgeadam.rabbitmq.producer.ManagerActivateStatusProducer;
 import com.bilgeadam.repository.entity.Auth;
 import com.bilgeadam.repository.enums.ERole;
 import com.bilgeadam.utility.CodeGenerator;
@@ -37,12 +39,13 @@ public class AuthService extends ServiceManager<Auth, Long> {
     private final IEmailManager iEmailManager;
     private final ICompanyManager companyManager;
     private final ForgotPasswordProducer forgotPasswordProducer;
+    private final ManagerActivateStatusProducer managerActivateStatusProducer;
 
 
     public AuthService(IAuthRepository authRepository, JwtTokenProvider jwtTokenProvider,
                        IUserProfileManager userManager, PasswordEncoder passwordEncoder,
                        MailRegisterProducer mailRegisterProducer,
-                       IEmailManager iEmailManager, ICompanyManager companyManager, ForgotPasswordProducer forgotPasswordProducer) {
+                       IEmailManager iEmailManager, ICompanyManager companyManager, ForgotPasswordProducer forgotPasswordProducer, ManagerActivateStatusProducer managerActivateStatusProducer) {
         super(authRepository);
         this.authRepository = authRepository;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -52,6 +55,7 @@ public class AuthService extends ServiceManager<Auth, Long> {
         this.iEmailManager = iEmailManager;
         this.companyManager = companyManager;
         this.forgotPasswordProducer = forgotPasswordProducer;
+        this.managerActivateStatusProducer = managerActivateStatusProducer;
     }
     public Boolean registerAdmin(RegisterVisitorRequestDto dto){
         Optional<Auth> optionalAuth = authRepository.findOptionalByEmail(dto.getEmail());
@@ -91,7 +95,8 @@ public class AuthService extends ServiceManager<Auth, Long> {
         auth.setRoles(List.of(ERole.MANAGER,ERole.PERSONNEL));
         auth.setStatus(EStatus.PENDING);
         if (dto.getPassword().equals(dto.getRepassword())){
-            auth.setActivationCode(CodeGenerator.generateCode());
+            String code=CodeGenerator.generateCode();
+            auth.setActivationCode(code);
             auth.setPassword(passwordEncoder.encode(dto.getPassword()));
             save(auth);
             NewCreateManagerUserRequestDto managerUserDto = IAuthMapper.INSTANCE.fromRegisterManagerRequestDtoToNewCreateManagerUserRequestDto(dto);
@@ -101,6 +106,12 @@ public class AuthService extends ServiceManager<Auth, Long> {
             ManagerCompanySaveRequestDto companySaveRequestDto = IAuthMapper.INSTANCE.fromAuthToCompanyManagerSaveRequestDto(auth);
             System.out.println(companySaveRequestDto);
             companyManager.companySave(companySaveRequestDto);
+
+            managerActivateStatusProducer.sendActivationCode(ManagerActivateStatusModel
+                    .builder()
+                    .email(dto.getEmail())
+                    .activationCode(code)
+                    .build());
         }else {
             throw new AuthManagerException(ErrorType.PASSWORD_ERROR);
         }
@@ -145,7 +156,7 @@ public class AuthService extends ServiceManager<Auth, Long> {
 
 
     public Boolean activateStatus(ActivateRequestDto dto) {
-        Optional<Auth> auth = findById(dto.getId());
+        Optional<Auth> auth = authRepository.findOptionalByEmail(dto.getEmail());
         if (auth.isEmpty()) {
             throw new AuthManagerException(ErrorType.USER_NOT_FOUND);
         } else if (auth.get().getActivationCode().equals(dto.getActivationCode())) {
@@ -219,7 +230,7 @@ public class AuthService extends ServiceManager<Auth, Long> {
 //        }
 //    }
 
-    public Boolean passwordChange(FromUserProfilePasswordChangeDto dto) {
+   /* public Boolean passwordChange(FromUserProfilePasswordChangeDto dto) {
         Optional<Auth> auth = authRepository.findById(dto.getAuthId());
         if (auth.isEmpty()) {
             throw new AuthManagerException(ErrorType.USER_NOT_FOUND);
@@ -228,6 +239,8 @@ public class AuthService extends ServiceManager<Auth, Long> {
         authRepository.save(auth.get());
         return true;
     }
+
+    */
 
     public Boolean forgotPasswordRequest(String email){
         Optional<Auth> optionalAuth = authRepository.findOptionalByEmail(email);

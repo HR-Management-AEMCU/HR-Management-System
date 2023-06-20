@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ActivateRequestDto {
-    Long id;
+    String email;
     String activationCode;
 }

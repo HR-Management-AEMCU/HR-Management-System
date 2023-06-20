@@ -10,6 +10,7 @@ import com.bilgeadam.exception.UserManagerException;
 import com.bilgeadam.manager.IAuthManager;
 import com.bilgeadam.manager.ICompanyManager;
 import com.bilgeadam.mapper.IUserProfileMapper;
+import com.bilgeadam.rabbitmq.model.PersonnelPasswordModel;
 import com.bilgeadam.rabbitmq.producer.PersonelPasswordProducer;
 import com.bilgeadam.repository.IUserProfileRepository;
 import com.bilgeadam.repository.entity.UserProfile;
@@ -135,11 +136,11 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
                 Long personnelAuthId = authManager.managerCreatePersonnelUserProfile(authDto).getBody();
                 user.setAuthId(personnelAuthId);
                 save(user);
-            /*PersonnelPasswordModel personnelPasswordModel = IUserProfileMapper.INSTANCE.fromUserProfileToPersonnelPasswordModel(user);
+            PersonnelPasswordModel personnelPasswordModel = IUserProfileMapper.INSTANCE.fromUserProfileToPersonnelPasswordModel(user);
             personnelPasswordModel.setPassword(dto.getPassword());
             personelPasswordProducer.sendPersonnelPassword(personnelPasswordModel);
 
-             */
+
                 return IUserProfileMapper.INSTANCE.userProfileToCreateEmployeeResponseDto(user);
             }
             throw new UserManagerException(ErrorType.USERNAME_DUPLICATE);

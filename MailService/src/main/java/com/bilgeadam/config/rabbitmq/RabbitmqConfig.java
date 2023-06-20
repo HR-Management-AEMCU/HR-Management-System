@@ -25,6 +25,12 @@ public class RabbitmqConfig {
     @Bean
     Queue personnelPasswordQueue(){return new Queue(personnelPasswordQueue);}
 
+    @Value("${rabbitmq.managerActivateQueue}")
+    private String managerActivateQueue;
+
+    @Bean
+    Queue managerActivateQueue(){return new Queue(managerActivateQueue);}
+
 
 
 //    private String queueRegister = "queueRegister";

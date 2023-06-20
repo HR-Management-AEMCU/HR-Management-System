@@ -10,5 +10,5 @@ dependencies {
     implementation libs.springCloudConfigClient
     implementation libs.JSON
 
-   // implementation libs.springBootRabbitMQ
+    implementation libs.springBootRabbitMQ
 }

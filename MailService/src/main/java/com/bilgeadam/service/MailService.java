@@ -3,6 +3,7 @@ package com.bilgeadam.service;
 
 import com.bilgeadam.rabbitmq.model.ForgotPasswordMailModel;
 import com.bilgeadam.rabbitmq.model.MailRegisterModel;
+import com.bilgeadam.rabbitmq.model.ManagerActivateStatusModel;
 import com.bilgeadam.rabbitmq.model.PersonnelPasswordModel;
 import com.bilgeadam.utility.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -86,6 +87,19 @@ public class MailService {
         javaMailSender.send(mailMessage);
     }
 
+    public void managerActivationCodeMail(ManagerActivateStatusModel model){
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(model.getEmail());
+        mailMessage.setSubject("HR Genius Activation Code");
+        mailMessage.setFrom("${spring.mail.username}");
+        mailMessage.setText("Dear User,\n" +
+                "Activation Code:\n"
+                +   "email: " + model.getEmail()
+                +   "\npassword: " + model.getActivationCode());
+        javaMailSender.send(mailMessage);
+
+
+    }
 
 }
 

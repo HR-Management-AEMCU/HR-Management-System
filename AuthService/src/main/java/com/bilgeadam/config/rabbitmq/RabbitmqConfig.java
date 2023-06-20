@@ -23,32 +23,22 @@ public class RabbitmqConfig {
     @Bean
     Queue forgotPasswordQueue(){return new Queue(forgotPasswordQueue);}
     @Bean
-    public Binding bindingForgotPasswordQueue(final Queue forgotPasswordQueue,final DirectExchange exchange){
+    public Binding bindingForgotPasswordQueue(final Queue forgotPasswordQueue,final DirectExchange exchange) {
         return BindingBuilder.bind(forgotPasswordQueue).to(exchange).with(forgotPasswordMailBindingKey);
     }
+        @Value("${rabbitmq.managerActivateQueue}")
+        private String managerActivateQueue;
+    @Value("${rabbitmq.managerActivateQueueBindingKey}")
+    private String managerActivateQueueBindingKey;
 
+    @Bean
+    Queue managerActivateQueue(){ return new Queue(managerActivateQueue);
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @Bean
+    public Binding bindingManagerActivateQueue(final Queue managerActivateQueue,final DirectExchange exchange) {
+        return BindingBuilder.bind(managerActivateQueue).to(exchange).with(managerActivateQueueBindingKey);
+    }
 
 
 //    private String exchange = "exchangeAuth";
