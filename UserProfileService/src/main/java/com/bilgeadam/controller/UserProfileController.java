@@ -117,11 +117,17 @@ public class UserProfileController {
     public ResponseEntity<Boolean> managerChangeRole(String token, String userId){
         return ResponseEntity.ok(userProfileService.managerChangeRole(token, userId));
     }
-    //update metodu için
+    //updateVisitor metodu için
     @PostMapping(UPDATE_VISITOR)
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<Boolean> updateVisitor(@RequestBody UpdateVisitorRequestDto dto){
         return ResponseEntity.ok(userProfileService.updateVisitor(dto));
+    }
+    //updatePersonnel metodu için
+    @PostMapping(UPDATE_PERSONNEL)
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<Boolean> updatePersonnel(@RequestBody UpdatePersonnelRequestDto dto){
+        return ResponseEntity.ok(userProfileService.updatePersonnel(dto));
     }
     //infoProfileVisitor
     @PostMapping(INFO_VISITOR)

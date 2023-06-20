@@ -27,10 +27,12 @@ public interface IUserProfileMapper {
     AuthCreatePersonnelProfileRequestDto fromUserProfileToAuthCreatePersonnelProfileRequestDto(final UserProfile userProfile);
     PersonnelPasswordModel fromUserProfileToPersonnelPasswordModel(final UserProfile userProfile);
 
-    //update metodu için
+    //updatevisitor metodu için
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     UserProfile fromUpdateVisitorRequestDtoToUserProfile(final UpdateVisitorRequestDto dto, @MappingTarget UserProfile userProfile);
-
+    //updatepersonel için
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    UserProfile fromUpdatePersonnelRequestDtoToUserProfile(final UpdatePersonnelRequestDto dto, @MappingTarget UserProfile userProfile);
     //infoProfileVisitor için responseDto dönüşüm metodu
     InfoVisitorResponseDto fromUserPRofileToInfoVisitorResponseDto(final UserProfile userProfile);
 

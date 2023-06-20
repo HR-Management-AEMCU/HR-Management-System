@@ -31,6 +31,7 @@ public class CreateEmployeeRequestDto {
     Long birthDate;
     private String birthPlace;
     private String identificationNumber;
+    private String phone;
     private EGender gender;
     private String neighbourhood;
     private String district;
