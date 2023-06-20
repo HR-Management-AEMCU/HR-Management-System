@@ -18,6 +18,8 @@ public class ApiUrls {
     public static final String ADD_OUTCOME = "/add-outcome";
     public static final String GET_COMPANIES = "/get-companies";
 
+    public static final String GET_SALARIES = "/get-salaries";
+
     public static final String CREATE_COMMENT = "/create-comment";
     public static final String COMMENT_APPROVAL = "/comment-approval";
     public static final String ADD_COMPLAINT_COMMENT = "/add-complaınt_comment";

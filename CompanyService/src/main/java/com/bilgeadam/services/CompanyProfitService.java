@@ -2,12 +2,11 @@ package com.bilgeadam.services;
 
 import com.bilgeadam.dto.request.AddIncomeRequestDto;
 import com.bilgeadam.dto.request.AddOutcomeRequestDto;
-import com.bilgeadam.dto.request.CompanyMoneyOperationRequestDto;
 import com.bilgeadam.exception.CompanyManagerException;
 import com.bilgeadam.exception.ErrorType;
+import com.bilgeadam.manager.IUserProfileManager;
 import com.bilgeadam.mapper.ICompanyProfitMapper;
 import com.bilgeadam.repository.ICompanyProfitRepository;
-import com.bilgeadam.repository.entity.Company;
 import com.bilgeadam.repository.entity.CompanyProfit;
 import com.bilgeadam.repository.enums.ERole;
 import com.bilgeadam.utility.JwtTokenProvider;
@@ -21,10 +20,12 @@ import java.util.Optional;
 public class CompanyProfitService extends ServiceManager<CompanyProfit,Long> {
     private final ICompanyProfitRepository companyProfitRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    public CompanyProfitService(ICompanyProfitRepository companyProfitRepository, JwtTokenProvider jwtTokenProvider) {
+    private final IUserProfileManager userProfileManager;
+    public CompanyProfitService(ICompanyProfitRepository companyProfitRepository, JwtTokenProvider jwtTokenProvider, IUserProfileManager userProfileManager) {
         super(companyProfitRepository);
         this.companyProfitRepository = companyProfitRepository;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userProfileManager = userProfileManager;
     }
     /**
      * frontend de şirket yöneticisinin şirkete gelir eklemesi için kullanılacak olan method
@@ -53,16 +54,25 @@ public class CompanyProfitService extends ServiceManager<CompanyProfit,Long> {
      * @param token
      * @return role dönüşü yapıyor
      */
-    public List<String> tokenRoleControls(String token){
+    public Double companyTotalSalaries(String token){
         Optional<Long> authId = jwtTokenProvider.getIdFromToken(token);
+        System.out.println(authId);
         if (authId.isEmpty()) {
             throw new CompanyManagerException(ErrorType.TOKEN_NOT_FOUND);// hata düzenlenebilir
         }
         List<String> roles = jwtTokenProvider.getRoleFromToken(token);
-        if (!roles.contains(ERole.MANAGER)) {
-            throw new CompanyManagerException(ErrorType.AUTHORIZATION_ERROR);
-        }
-        return roles;
+        System.out.println(roles);
+        if (roles.contains(ERole.MANAGER.toString())) {
+            List<Double> salaries= userProfileManager.getEmployeeListforSalary(token).getBody();
+            double totalSalary = 0.0;
+            for(Double salary : salaries){
+                if(salary != null)
+                totalSalary += salary;
+            }
+            return totalSalary;
+             }
+        throw new CompanyManagerException(ErrorType.AUTHORIZATION_ERROR);
+
     }
     /**
      * her metod da aynı kontrolleri tekrar yazmamak için ekledim

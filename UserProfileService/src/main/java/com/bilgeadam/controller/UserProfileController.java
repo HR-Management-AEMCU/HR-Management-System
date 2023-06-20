@@ -85,6 +85,12 @@ public class UserProfileController {
     public ResponseEntity<List<UserProfile>> getEmployeeList(@PathVariable String token) {
         return ResponseEntity.ok(userProfileService.getEmployeeList(token));
     }
+    @GetMapping("/list-for-salary/{token}")
+    @Hidden
+    public ResponseEntity<List<Double>> getEmployeeListforSalary(@PathVariable String token) {
+        return ResponseEntity.ok(userProfileService.getEmployeeListforSalary(token));
+    }
+
     /*@Hidden
     @PostMapping("/activate-director/{directorId}")
     public ResponseEntity<Boolean> activateDirector(@PathVariable Long directorId){

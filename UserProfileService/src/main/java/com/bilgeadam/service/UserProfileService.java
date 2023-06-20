@@ -209,6 +209,25 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         }
         throw new UserManagerException(ErrorType.ROLE_ERROR);
     }
+    public List<Double> getEmployeeListforSalary(String token) {
+        Optional<Long> authId = jwtTokenProvider.getIdFromToken(token);
+        Optional<UserProfile> user = userProfileRepository.findByAuthId(authId.get());
+        if (user.isEmpty()) {
+            throw new UserManagerException(ErrorType.USER_NOT_FOUND);
+        }
+        String companyName = user.get().getCompanyName();
+        System.out.println(companyName);
+        System.out.println(user);
+        if (user.get().getRoles().toString().contains(ERole.MANAGER.toString())) {
+            List<UserProfile> employeeList = userProfileRepository.findAllByCompanyName(companyName);
+            List<Double> salaries = new ArrayList<>();
+            for( UserProfile employee : employeeList){
+                salaries.add(employee.getSalary());
+            }
+            return salaries;
+        }
+        throw new UserManagerException(ErrorType.ROLE_ERROR);
+    }
 
     /*public Boolean activateDirector(Long directorId){
         Optional<UserProfile> optionalUser= userProfileRepository.findByAuthId(directorId);
