@@ -22,7 +22,7 @@ jwt:
   issuer: ${issuer}
 
 
-#rabbitmq:
-#  user-exchange: user-exchange
-#  personnelPasswordKey: personnel-password-key
-#  queuePersonnelPassword: queue-personnel-password
+rabbitmq:
+  user-exchange: user-exchange
+  personnelPasswordKey: personnel-password-key
+  queuePersonnelPassword: queue-personnel-password

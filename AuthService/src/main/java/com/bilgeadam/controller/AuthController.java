@@ -80,11 +80,13 @@ public class AuthController {
 //            throw new AuthManagerException(ErrorType.USER_NOT_FOUND);//usernotcreated
 //        }
 //    }
-
+/*
     @PutMapping(PASSWORD_CHANGE)
     public ResponseEntity<Boolean> passwordChange(@RequestBody FromUserProfilePasswordChangeDto dto){
         return ResponseEntity.ok(authService.passwordChange(dto));
     }
+
+ */
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping(FORGOT_PASSWORD_REQUEST + "/{email}")
