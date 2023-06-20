@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -43,7 +44,7 @@ public class UserProfile extends Base {
     private String birthPlace;
     private String identificationNumber;
     @Builder.Default
-    private List<ERole> role = new ArrayList<>();
+    private List<ERole> roles = new ArrayList<>();
     private EGender gender;
     private String phone;
     private String neighbourhood;
@@ -57,4 +58,5 @@ public class UserProfile extends Base {
     private String department;
     private Long jobStartingDate;
     private Long jobEndingDate;
+    private Date denemeTarihi;
 }

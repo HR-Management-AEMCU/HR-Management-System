@@ -61,9 +61,10 @@ public class UserProfileController {
 //        return ResponseEntity.ok(userProfileService.createUserFromAuth(dto));
 //    }
 
-    @PostMapping("/save-employee/{token}")
-    public ResponseEntity<CreateEmployeeResponseDto> saveEmployee(@RequestBody @Valid CreateEmployeeRequestDto dto, @PathVariable String token){
-        return ResponseEntity.ok(userProfileService.saveEmployee(dto,token));
+    @PostMapping("/save-employee")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<CreateEmployeeResponseDto> saveEmployee(@RequestBody @Valid CreateEmployeeRequestDto dto){
+        return ResponseEntity.ok(userProfileService.saveEmployee(dto));
     }
     @DeleteMapping("/delete-employee/{employeeId}/{token}")
     public ResponseEntity<Boolean> removeEmployee(@PathVariable String employeeId,@PathVariable String token){

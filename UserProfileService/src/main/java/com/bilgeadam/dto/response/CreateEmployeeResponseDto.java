@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 
 @Data
 @NoArgsConstructor
@@ -34,4 +36,5 @@ public class CreateEmployeeResponseDto {
     private Integer postalCode;
     private String department;
     private Long jobStartingDate;
+    private Date denemeTarihi;
 }

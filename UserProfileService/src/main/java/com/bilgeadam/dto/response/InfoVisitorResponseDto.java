@@ -17,6 +17,7 @@ public class InfoVisitorResponseDto {
     String photo;
     String email;
     Long birthDate;
+    private String phone;
     private String birthPlace;
     private String identificationNumber;
     private EGender gender;

@@ -65,7 +65,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         UserProfile userProfile = IUserProfileMapper.INSTANCE.fromNewCreateVisitorUserResponseDtoToUserProfile(dto);
         List<ERole> roleList = new ArrayList<>();
         roleList.add(ERole.VISITOR);
-        userProfile.setRole(roleList);
+        userProfile.setRoles(roleList);
         save(userProfile);
         return true;
     }
@@ -74,7 +74,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         UserProfile userProfile = IUserProfileMapper.INSTANCE.fromNewCreateAdminUserResponseDtoToUserProfile(dto);
         List<ERole> roleList = new ArrayList<>();
         roleList.add(ERole.ADMIN);
-        userProfile.setRole(roleList);
+        userProfile.setRoles(roleList);
         save(userProfile);
         return true;
     }
@@ -87,7 +87,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         roleList.add(ERole.MANAGER);
         roleList.add(ERole.PERSONNEL);
         userProfile.setStatus(EStatus.PENDING);
-        userProfile.setRole(roleList);
+        userProfile.setRoles(roleList);
         //userProfile.setCompanyId(companyId);
         save(userProfile);
         return true;
@@ -110,9 +110,9 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         return normalizedString.replaceAll("[^\\p{ASCII}]", "");
     }
 
-    public CreateEmployeeResponseDto saveEmployee(CreateEmployeeRequestDto dto, String token) {
-        List<String> role = jwtTokenProvider.getRoleFromToken(token);
-        Optional<Long> managerId = jwtTokenProvider.getIdFromToken(token);
+    public CreateEmployeeResponseDto saveEmployee(CreateEmployeeRequestDto dto) {
+        List<String> role = jwtTokenProvider.getRoleFromToken(dto.getToken());
+        Optional<Long> managerId = jwtTokenProvider.getIdFromToken(dto.getToken());
         if (role.contains(ERole.MANAGER.toString())) {
             Optional<UserProfile> optionalUserProfile = userProfileRepository.findByEmail(dto.getEmail());
             if (optionalUserProfile.isEmpty()) {
@@ -126,11 +126,12 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
                 user.setPassword(passwordEncoder.encode(dto.getPassword()));
                 List<ERole> roleList = new ArrayList<>();
                 roleList.add(ERole.PERSONNEL);
-                user.setRole(roleList);
+                user.setRoles(roleList);
                 user.setStatus(EStatus.ACTIVE);
                 user.setCompanyId(managerProfile.get().getCompanyId());
                 AuthCreatePersonnelProfileRequestDto authDto =
                         IUserProfileMapper.INSTANCE.fromUserProfileToAuthCreatePersonnelProfileRequestDto(user);
+                System.out.println(authDto);
                 Long personnelAuthId = authManager.managerCreatePersonnelUserProfile(authDto).getBody();
                 user.setAuthId(personnelAuthId);
                 save(user);
@@ -154,7 +155,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             throw new UserManagerException(ErrorType.USER_NOT_FOUND);
         }
         System.out.println(userProfile);
-        if (userProfile.get().getRole().toString().contains(ERole.MANAGER.toString())) {
+        if (userProfile.get().getRoles().toString().contains(ERole.MANAGER.toString())) {
             Optional<UserProfile> employee = findById(employeeId);
             System.out.println(employee);
             if (userProfile.get().getCompanyName().toLowerCase().equals(employee.get().getCompanyName().toLowerCase())) {
@@ -183,7 +184,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         for (UserProfile user : userProfileList) {
             // todo bu kontrol admin onay metodundan sonra eklenecek
             // user.getIsActivatedByAdmin().equals(true) &&
-            if (user.getRole().equals(ERole.MANAGER)) {
+            if (user.getRoles().equals(ERole.MANAGER)) {
                 String fullName = user.getName() + " " + user.getSurname();
                 results.add(fullName);
             }
@@ -201,7 +202,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         }
         String companyName = user.get().getCompanyName();
         System.out.println(companyName);
-        if (user.get().getRole().toString().contains(ERole.MANAGER.toString())) {
+        if (user.get().getRoles().toString().contains(ERole.MANAGER.toString())) {
             List<UserProfile> employeeList = userProfileRepository.findAllByCompanyName(companyName);
             return employeeList;
         }
@@ -227,7 +228,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             if (optionalAdminProfile.isEmpty())
                 throw new UserManagerException(ErrorType.USER_NOT_FOUND);
             Optional<UserProfile> user = findById(userId);
-            if (user.get().getRole().contains(ERole.MANAGER)) {
+            if (user.get().getRoles().contains(ERole.MANAGER)) {
                 user.get().setStatus(EStatus.ACTIVE);
                 update(user.get());
                 authManager.updateManagerStatus(IUserProfileMapper.INSTANCE.fromUserProfileToUpdateManagerStatusRequestDto(user.get()));
@@ -248,7 +249,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             if (optionalAdminProfile.isEmpty())
                 throw new UserManagerException(ErrorType.USER_NOT_FOUND);
             Optional<UserProfile> user = findById(userId);
-            if (user.get().getRole().contains(ERole.MANAGER)) {
+            if (user.get().getRoles().contains(ERole.MANAGER)) {
                 user.get().setStatus(EStatus.BANNED);
                 update(user.get());
                 authManager.updateManagerStatus(IUserProfileMapper.INSTANCE.fromUserProfileToUpdateManagerStatusRequestDto(user.get()));
@@ -315,7 +316,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
 
     //veritabanında Rolu manager olan ve Status INACTIVE olanları getiren findall metodu
     public List<UserProfile> findRoleManagerAndStatusInactive() {
-        List<UserProfile> userProfile = userProfileRepository.findByRoleAndStatus(ERole.MANAGER, EStatus.INACTIVE);
+        List<UserProfile> userProfile = userProfileRepository.findByRolesAndStatus(ERole.MANAGER, EStatus.INACTIVE);
         System.out.println(userProfile);
 
         return userProfile;
@@ -380,7 +381,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         if (userRole.contains(ERole.MANAGER.toString())) {
             List<ERole> personnelRoleList = new ArrayList<>();
             personnelRoleList.remove(ERole.MANAGER);
-            userProfile.setRole(personnelRoleList);
+            userProfile.setRoles(personnelRoleList);
             userProfileRepository.save(userProfile);
             return true;
         }

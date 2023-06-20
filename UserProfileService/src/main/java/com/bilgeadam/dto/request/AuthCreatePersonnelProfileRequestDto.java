@@ -19,6 +19,6 @@ public class AuthCreatePersonnelProfileRequestDto {
     private String name;
     private String surname;
     private String password;
-    private List<ERole> role;
+    private List<ERole> roles;
     private EStatus status;
 }
