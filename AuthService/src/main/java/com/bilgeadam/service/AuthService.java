@@ -187,8 +187,8 @@ public class AuthService extends ServiceManager<Auth, Long> {
         });
         LoginResponseDto loginResponseDto = LoginResponseDto.builder()
                 .token(token.get())
+                .roles(auth.get().getRoles())
                 .build();
-
         return loginResponseDto;
     }
 
@@ -295,6 +295,7 @@ public class AuthService extends ServiceManager<Auth, Long> {
     }*/
     public Long managerCreatePersonnelUserProfile(AuthCreatePersonnelProfileResponseDto dto){
         Auth auth = IAuthMapper.INSTANCE.fromCreatePersonelProfileDtotoAuth(dto);
+        System.out.println(auth);
         save(auth);
         return auth.getAuthId();
     }

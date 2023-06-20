@@ -7,12 +7,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class CreateEmployeeRequestDto {
+    private String token;
     @NotBlank(message = "Personelin ismini boş bırakamazsınız !")
     String name;
     @NotBlank(message = "Personelin soyadını boş bırakamazsınız !")
@@ -26,7 +28,6 @@ public class CreateEmployeeRequestDto {
     @NotBlank(message = "Personelin mailini boş bırakamazsınız !")
     String email;
     String companyName;
-    @NotNull(message = "Personel'in doğum tarihini giriniz !")
     Long birthDate;
     private String birthPlace;
     private String identificationNumber;
@@ -40,6 +41,7 @@ public class CreateEmployeeRequestDto {
     private Integer postalCode;
     private String department;
     private Long jobStartingDate;
+    private Date denemeTarihi;
 
 
 

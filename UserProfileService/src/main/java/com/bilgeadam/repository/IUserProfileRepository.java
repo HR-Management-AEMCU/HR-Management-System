@@ -14,14 +14,14 @@ public interface IUserProfileRepository extends MongoRepository<UserProfile, Str
 
     Optional<UserProfile> findByAuthId(Long authId);
 
-    Optional<UserProfile> findByAuthIdAndRole(Long authId,String role);
+    Optional<UserProfile> findByAuthIdAndRoles(Long authId,String role);
     List<UserProfile> findAllByCompanyName(String companyName);
 
     Optional<UserProfile> findByEmail(String email);
 
-    List<UserProfile> findAllByRoleAndCompanyName(ERole employee, String companyName);
+    List<UserProfile> findAllByRolesAndCompanyName(ERole employee, String companyName);
 
-    List<UserProfile> findByRoleAndStatus(ERole role, EStatus status);
+    List<UserProfile> findByRolesAndStatus(ERole role, EStatus status);
 
 
 
