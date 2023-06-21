@@ -9,13 +9,16 @@ import com.bilgeadam.exception.CompanyManagerException;
 import com.bilgeadam.exception.ErrorType;
 import com.bilgeadam.manager.IUserProfileManager;
 import com.bilgeadam.mapper.ICompanyMapper;
+import com.bilgeadam.repository.ICompanyPageRepository;
 import com.bilgeadam.repository.ICompanyRepository;
 import com.bilgeadam.repository.entity.Company;
 import com.bilgeadam.utility.JwtTokenProvider;
 import com.bilgeadam.utility.ServiceManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,13 +29,15 @@ public class CompanyService extends ServiceManager<Company,Long> {
     private final JwtTokenProvider jwtTokenProvider;
     private final CompanyProfitService companyProfitService;
     private final IUserProfileManager userProfileManager;
+    private final ICompanyPageRepository companyPageRepository;
 
-    public CompanyService(ICompanyRepository companyRepository, JwtTokenProvider jwtTokenProvider, CompanyProfitService companyProfitService, IUserProfileManager userProfileManager) {
+    public CompanyService(ICompanyRepository companyRepository, JwtTokenProvider jwtTokenProvider, CompanyProfitService companyProfitService, IUserProfileManager userProfileManager, ICompanyPageRepository companyPageRepository) {
         super(companyRepository);
         this.companyRepository = companyRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.companyProfitService = companyProfitService;
         this.userProfileManager = userProfileManager;
+        this.companyPageRepository = companyPageRepository;
     }
 
     public SaveCompanyResponseDto saveCompany(SaveCompanyRequestDto dto){
@@ -117,11 +122,17 @@ public class CompanyService extends ServiceManager<Company,Long> {
         return responseDtoList;
     }
 
-        public List<Company> companySearch(String text){
-            List<Company> company = companyRepository.findByCompanyNameStartingWithIgnoreCase(text);
-            System.out.println(company);
-            return company;
-        }
+    public List<Company> companySearch(String text){
+        List<Company> company = companyRepository.findByCompanyNameStartingWithIgnoreCase(text);
+        System.out.println(company);
+        return company;
+    }
+    public Page<Company> companyPageSearch(String text, int pageNumber){
+        Pageable pageable = PageRequest.of(pageNumber - 1, 5); // pageNumber - 1 because pages are zero based index
+        Page<Company> company = companyPageRepository.findByCompanyNameStartingWithIgnoreCase(text, pageable);
+        System.out.println(company.getContent());
+        return company;
+    }
 
     //ıncome utcome profitloss payment response dönen, parametrede
     //token ,içeren ve o token ile userprofile istek atıp gelen veri ile
