@@ -9,6 +9,7 @@ import com.bilgeadam.repository.entity.Company;
 import com.bilgeadam.services.CompanyService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -68,6 +69,12 @@ public class CompanyController {
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<List<Company>> searchCompany(String text){
         return ResponseEntity.ok(companyService.companySearch(text));
+    }
+
+    @GetMapping(SEARCH_COMPANIES_PAGE)
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<Page<Company>> searchPageCompany(@RequestParam String text, @RequestParam int page){
+        return ResponseEntity.ok(companyService.companyPageSearch(text,page));
     }
 
     @GetMapping("/company/{id}")
