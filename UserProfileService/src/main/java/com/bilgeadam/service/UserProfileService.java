@@ -3,6 +3,7 @@ package com.bilgeadam.service;
 
 import com.bilgeadam.dto.request.*;
 import com.bilgeadam.dto.response.CreateEmployeeResponseDto;
+import com.bilgeadam.dto.response.InfoManagerResponseDto;
 import com.bilgeadam.dto.response.InfoPersonelResponseDto;
 import com.bilgeadam.dto.response.InfoVisitorResponseDto;
 import com.bilgeadam.exception.ErrorType;
@@ -458,5 +459,26 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             throw new UserManagerException(ErrorType.USER_NOT_FOUND);
         }
         throw new UserManagerException(ErrorType.AUTHORIZATION_ERROR);
+    }
+
+    public InfoManagerResponseDto infoProfileManager(InfoManagerRequestDto dto) {
+        Optional<Long> authId = jwtTokenProvider.getIdFromToken(dto.getToken());
+        System.out.println(authId);
+        if (authId.isEmpty()) {
+            throw new UserManagerException(ErrorType.INVALID_TOKEN);
+        }
+        Optional<UserProfile> optionalUser = userProfileRepository.findByAuthId(authId.get());
+        System.out.println(optionalUser);
+        if (optionalUser.isEmpty()) {
+            throw new UserManagerException(ErrorType.USER_NOT_FOUND);
+        }
+        System.out.println(optionalUser.get().getRoles());
+        List<String> role = jwtTokenProvider.getRoleFromToken(dto.getToken());
+        if (role.contains(ERole.MANAGER.toString())) {
+            InfoManagerResponseDto infoManager = IUserProfileMapper.INSTANCE.fromUserPRofileToInfoManagerResponseDto(optionalUser.get());
+            return infoManager;
+        }else {
+            throw new UserManagerException(ErrorType.ROLE_NOT_PERSONNEL);
+        }
     }
 }
