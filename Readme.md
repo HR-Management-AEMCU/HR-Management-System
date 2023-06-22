@@ -41,3 +41,21 @@ CompanyService --> 8070
 UserService --> 8060
 MailService--> 8085
 
+        KUBERNETES
+PgAdmin-> Servers -> Register -> Server
+
+Name:HRMSKubernetesServer
+
+Connection
+Host name: 34.163.33.125
+Port: 22222
+Password:root
+---------------------
+MongoDB Compass
+New Connection
+Host -> 34.163.221.243:21017
+
+Authentication
+Username : HRMSMongoDB
+Password : root
+

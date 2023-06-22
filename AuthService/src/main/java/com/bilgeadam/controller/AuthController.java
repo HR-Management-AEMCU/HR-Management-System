@@ -26,11 +26,15 @@ import static com.bilgeadam.constants.ApiUrls.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(AUTH)
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 
     private final AuthService authService;
 
+    @GetMapping("/getpage")
+    public ResponseEntity<String> getPage(){
+        return ResponseEntity.ok("Auth Service e ulaştınız");
+    }
 
     @PostMapping(REGISTER_VISITOR)
     @CrossOrigin(origins = "*", allowedHeaders = "*")

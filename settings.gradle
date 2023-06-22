@@ -5,4 +5,5 @@ include 'UserProfileService'
 include 'ConfigServer'
 include 'ConfigServerGit'
 include 'MailService'
+include 'ApiGatewayService'
 
