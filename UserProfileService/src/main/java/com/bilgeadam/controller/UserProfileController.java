@@ -3,6 +3,7 @@ package com.bilgeadam.controller;
 import com.bilgeadam.dto.request.*;
 
 import com.bilgeadam.dto.response.CreateEmployeeResponseDto;
+import com.bilgeadam.dto.response.InfoManagerResponseDto;
 import com.bilgeadam.dto.response.InfoPersonelResponseDto;
 import com.bilgeadam.dto.response.InfoVisitorResponseDto;
 import com.bilgeadam.repository.entity.UserProfile;
@@ -150,6 +151,11 @@ public class UserProfileController {
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<InfoPersonelResponseDto> infoProfilePersonel(@RequestBody InfoPersonelRequestDto dto){
         return ResponseEntity.ok(userProfileService.infoProfilePersonel(dto));
+    }
+    @PostMapping(INFO_MANAGER)
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<InfoManagerResponseDto> infoProfileManager(@RequestBody InfoManagerRequestDto dto){
+        return ResponseEntity.ok(userProfileService.infoProfileManager(dto));
     }
 
 

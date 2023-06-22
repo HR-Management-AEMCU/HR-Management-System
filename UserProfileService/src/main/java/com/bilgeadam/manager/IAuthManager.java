@@ -16,6 +16,7 @@ public interface IAuthManager {
 
     @PutMapping("/update-manager-status")
     public ResponseEntity<Boolean> updateManagerStatus(@RequestBody UpdateManagerStatusRequestDto dto);
+    
 
     /*@PutMapping("/manager-delete-personnel")
     public ResponseEntity<Boolean> managerDeletePersonnel(@RequestBody DeletePersonnelFromAuthRequestDto dto);*/
