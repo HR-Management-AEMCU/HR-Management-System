@@ -4,6 +4,7 @@ import com.bilgeadam.dto.request.ManagerCompanySaveRequestDto;
 import com.bilgeadam.dto.request.SaveCompanyRequestDto;
 import com.bilgeadam.dto.request.UpdateCompanyRequestDto;
 import com.bilgeadam.dto.response.CompanyMoneyOperationResponseDto;
+import com.bilgeadam.dto.response.InfoCompanyResponseDto;
 import com.bilgeadam.dto.response.ProfitLossResponseDto;
 import com.bilgeadam.dto.response.SaveCompanyResponseDto;
 import com.bilgeadam.repository.entity.Company;
@@ -28,4 +29,6 @@ public interface ICompanyMapper {
     //update metodu
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Company fromUpdateCompanyResponseDtoToCompany(final UpdateCompanyRequestDto dto, @MappingTarget Company company);
+
+    InfoCompanyResponseDto fromCompanyToCompanyInfoResponseDto(final Company company);
 }

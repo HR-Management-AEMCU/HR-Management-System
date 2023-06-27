@@ -19,7 +19,9 @@ public enum ErrorType {
     TOKEN_NOT_FOUND(4404, "Böyle bir token bulunamadı", HttpStatus.NOT_FOUND),
     AUTHORIZATION_ERROR(4405, "you have no permission to continue", HttpStatus.BAD_REQUEST),
     COMPANY_ERROR(4900,"You can only comment to your company.", HttpStatus.BAD_REQUEST),
+    ROLE_NOT_MANAGER(4905,"Bu işlemi managerrolüne sahip kişiler yapabilir.", HttpStatus.BAD_REQUEST),
     COMMENT_STATUS_ERROR(4905,"Your comment was not Approved", HttpStatus.BAD_REQUEST),
+    INVALID_TOKEN(4600,"Token hatası" ,  HttpStatus.BAD_REQUEST),
     ACTIVATE_CODE_ERROR(4500, "Aktivasyon kod hatası", HttpStatus.BAD_REQUEST);
 
 
