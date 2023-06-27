@@ -1,10 +1,7 @@
 package com.bilgeadam.controller;
 
 import com.bilgeadam.dto.request.*;
-import com.bilgeadam.dto.response.CompanyMoneyOperationResponseDto;
-import com.bilgeadam.dto.response.GetCompanyResponseDto;
-import com.bilgeadam.dto.response.ProfitLossResponseDto;
-import com.bilgeadam.dto.response.SaveCompanyResponseDto;
+import com.bilgeadam.dto.response.*;
 import com.bilgeadam.repository.entity.Company;
 import com.bilgeadam.services.CompanyService;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -27,6 +24,7 @@ public class CompanyController {
         return ResponseEntity.ok(companyService.saveCompany(dto));
     }
     @PostMapping(UPDATE)
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<Boolean> update(@RequestBody UpdateCompanyRequestDto dto){
         return ResponseEntity.ok(companyService.update(dto));
     }
@@ -81,6 +79,11 @@ public class CompanyController {
     public ResponseEntity<GetCompanyResponseDto> getAllInfoCompany(@PathVariable Long id) {
         GetCompanyResponseDto companyResponseDto = companyService.getCompanyWithId(id);
         return ResponseEntity.ok(companyResponseDto);
+    }
+    @PostMapping(INFO_COMPANY)
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<InfoCompanyResponseDto> infoProfileVisitor(@RequestBody InfoCompanyRequestDto dto){
+        return ResponseEntity.ok(companyService.infoProfileCompany(dto));
     }
 
 }

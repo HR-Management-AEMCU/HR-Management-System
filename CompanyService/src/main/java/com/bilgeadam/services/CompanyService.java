@@ -1,10 +1,7 @@
 package com.bilgeadam.services;
 
 import com.bilgeadam.dto.request.*;
-import com.bilgeadam.dto.response.CompanyMoneyOperationResponseDto;
-import com.bilgeadam.dto.response.GetCompanyResponseDto;
-import com.bilgeadam.dto.response.ProfitLossResponseDto;
-import com.bilgeadam.dto.response.SaveCompanyResponseDto;
+import com.bilgeadam.dto.response.*;
 import com.bilgeadam.exception.CompanyManagerException;
 import com.bilgeadam.exception.ErrorType;
 import com.bilgeadam.manager.IUserProfileManager;
@@ -12,6 +9,7 @@ import com.bilgeadam.mapper.ICompanyMapper;
 import com.bilgeadam.repository.ICompanyPageRepository;
 import com.bilgeadam.repository.ICompanyRepository;
 import com.bilgeadam.repository.entity.Company;
+import com.bilgeadam.repository.enums.ERole;
 import com.bilgeadam.utility.JwtTokenProvider;
 import com.bilgeadam.utility.ServiceManager;
 import org.springframework.data.domain.Page;
@@ -62,11 +60,15 @@ public class CompanyService extends ServiceManager<Company,Long> {
         System.out.println(optionalCompany);
         if(optionalCompany.isEmpty()){
             throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);
-        }else{
+        }
+        List<String> role = jwtTokenProvider.getRoleFromToken(dto.getToken());
+        if (role.contains(ERole.MANAGER.toString())){
             Company company = ICompanyMapper.INSTANCE.fromUpdateCompanyResponseDtoToCompany(dto,optionalCompany.get());
             System.out.println(company);
             update(company);
             return true;
+        }else {
+            throw new CompanyManagerException(ErrorType.ROLE_NOT_MANAGER);
         }
     }
     //authtan gelen companyname ve taxnumber kayıt edilmesi
@@ -149,9 +151,9 @@ public class CompanyService extends ServiceManager<Company,Long> {
         System.out.println(company);
         Double incomeMoney = company.get().getIncome();
         Double outcomeMoney = company.get().getOutcome();
-        Double karZararOrani=(incomeMoney/outcomeMoney)*100;
+        Double karZararOrani=((incomeMoney-outcomeMoney)/incomeMoney)*100;
         company.get().setProfitLoss(karZararOrani);
-        company.get().setPayments(2000000D);
+        company.get().setPayments(20000D);
         System.out.println(incomeMoney+" "+outcomeMoney+" "+karZararOrani);
         update(company.get());
         CompanyMoneyOperationResponseDto companyMoneyOperationResponseDto=ICompanyMapper.INSTANCE.fromCompanyToCompanyMoneyOperationRequestDto(company.get());
@@ -176,6 +178,26 @@ public class CompanyService extends ServiceManager<Company,Long> {
 
         return responseDto;
     }
+    public InfoCompanyResponseDto infoProfileCompany(InfoCompanyRequestDto dto){
+        Optional<Long> authId = jwtTokenProvider.getIdFromToken(dto.getToken());
+        System.out.println(authId);
+        if (authId.isEmpty()) {
+            throw new CompanyManagerException(ErrorType.INVALID_TOKEN);
+        }
+        Optional<Company> optionalCompany = companyRepository.findOptionalByAuthId(authId.get());
+        if (optionalCompany.isEmpty()) {
+            throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);
+        }
+        List<String> role = jwtTokenProvider.getRoleFromToken(dto.getToken());
+        if (role.contains(ERole.MANAGER.toString())){
+            InfoCompanyResponseDto infoCompany=ICompanyMapper.INSTANCE.fromCompanyToCompanyInfoResponseDto(optionalCompany.get());
+            return infoCompany;
+        }else {
+            throw new CompanyManagerException(ErrorType.ROLE_NOT_MANAGER);
+        }
+    }
+
+
 
 
 }

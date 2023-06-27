@@ -1,31 +1,33 @@
-package com.bilgeadam.dto.request;
+package com.bilgeadam.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import java.util.List;
+
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateCompanyRequestDto {
-    private String token;
-    @NotBlank(message = "Lütfen şirket adını giriniz.")
+@Builder
+public class InfoCompanyResponseDto {
     private String companyName;
-    @NotBlank(message = "Lütfen şirket vergi numarasını giriniz.")
     private String taxNumber;
-    private String companyDistrict;
-    private String companyProvince;
+    private String companyLogoUrl;
     private String companyCountry;
+    private String companyProvince;
+    private String companyDistrict;
     private Integer companyBuildingNumber;
     private Integer companyApartmentNumber;
     private Integer companyPostalCode;
     private Double companyBalanceStatus;
-    //gecice olarak ekrana paraları yazdırabilmek için eklendi
     private Double income;
     private Double outcome;
-    private String companyLogoUrl;
+
 }
