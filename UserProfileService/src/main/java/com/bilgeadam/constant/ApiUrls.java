@@ -3,6 +3,7 @@ package com.bilgeadam.constant;
 public class ApiUrls {
     public static final String VERSION= "api/v1";
     public static final String USER_PROFILE=VERSION+"/user-profile";
+    public static final String AVANS=VERSION+"/avans";
     public static final String CREATE = "/create";
     public static final String CREATE_PERSONAL = "/create-personal";
     public static final String PASS_CHANGE = "/password-change";
@@ -20,4 +21,5 @@ public class ApiUrls {
     public static final String ADMIN_CHANGE_MANAGER_STATUS_CHECK = "/admin-change-manager-status-check";
     public static final String ADMIN_CHANGE_MANAGER_STATUS_CROSS = "/admin-change-manager-status-cross";
     public static final String ADMIN_MANAGER_APPROVAL = "/admin-manager-approval";
+    public static final String PERSONNEL_AVANS = "/personnel-avans";
 }

@@ -1,10 +1,7 @@
 package com.bilgeadam.mapper;
 
 import com.bilgeadam.dto.request.*;
-import com.bilgeadam.dto.response.CreateEmployeeResponseDto;
-import com.bilgeadam.dto.response.InfoManagerResponseDto;
-import com.bilgeadam.dto.response.InfoPersonelResponseDto;
-import com.bilgeadam.dto.response.InfoVisitorResponseDto;
+import com.bilgeadam.dto.response.*;
 import com.bilgeadam.rabbitmq.model.PersonnelPasswordModel;
 import com.bilgeadam.repository.entity.UserProfile;
 import org.mapstruct.*;
@@ -42,7 +39,6 @@ public interface IUserProfileMapper {
 
     InfoPersonelResponseDto fromUserPRofileToInfoPersonelResponseDto(final UserProfile userProfile);
     InfoManagerResponseDto fromUserPRofileToInfoManagerResponseDto(final UserProfile userProfile);
-
 
 
 
