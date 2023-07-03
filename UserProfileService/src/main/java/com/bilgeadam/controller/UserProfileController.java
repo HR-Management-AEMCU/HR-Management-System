@@ -8,6 +8,7 @@ import com.bilgeadam.service.UserProfileService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -155,7 +156,11 @@ public class UserProfileController {
         return ResponseEntity.ok(userProfileService.infoProfileManager(dto));
     }
 
-
+    @GetMapping(SEARCH_PERSONNEL)
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<Page<UserProfile>> searchPageCompany(@RequestParam String text, @RequestParam int page){
+        return ResponseEntity.ok(userProfileService.userProfileListSearch(text,page));
+    }
 
 
 

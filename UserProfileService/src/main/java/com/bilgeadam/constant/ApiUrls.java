@@ -6,6 +6,7 @@ public class ApiUrls {
     public static final String AVANS=VERSION+"/avans";
     public static final String CREATE = "/create";
     public static final String CREATE_PERSONAL = "/create-personal";
+    public static final String SEARCH_PERSONNEL = "/search-personnel";
     public static final String PASS_CHANGE = "/password-change";
     public static final String UPDATE = "/update";
     public static final String UPDATE_VISITOR = "/update-visitor";

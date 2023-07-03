@@ -10,6 +10,7 @@ import com.bilgeadam.manager.ICompanyManager;
 import com.bilgeadam.mapper.IUserProfileMapper;
 import com.bilgeadam.rabbitmq.model.PersonnelPasswordModel;
 import com.bilgeadam.rabbitmq.producer.PersonelPasswordProducer;
+import com.bilgeadam.repository.IUserProfilePageRepository;
 import com.bilgeadam.repository.IUserProfileRepository;
 import com.bilgeadam.repository.entity.UserProfile;
 import com.bilgeadam.repository.enums.ERole;
@@ -19,6 +20,9 @@ import com.bilgeadam.utility.ServiceManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +41,7 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class UserProfileService extends ServiceManager<UserProfile, String> {
     private final IUserProfileRepository userProfileRepository;
+    private final IUserProfilePageRepository userProfilePageRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final ICompanyManager companyManager;
     private final IAuthManager authManager;
@@ -44,9 +49,10 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
     private final PasswordEncoder passwordEncoder;
     private final PersonelPasswordProducer personelPasswordProducer;
 
-    public UserProfileService(IUserProfileRepository userProfileRepository, JwtTokenProvider jwtTokenProvider, ICompanyManager companyManager, IAuthManager authManager, PasswordEncoder passwordEncoder, PersonelPasswordProducer personelPasswordProducer) {
+    public UserProfileService(IUserProfileRepository userProfileRepository, IUserProfilePageRepository userProfilePageRepository, JwtTokenProvider jwtTokenProvider, ICompanyManager companyManager, IAuthManager authManager, PasswordEncoder passwordEncoder, PersonelPasswordProducer personelPasswordProducer) {
         super(userProfileRepository);
         this.userProfileRepository = userProfileRepository;
+        this.userProfilePageRepository = userProfilePageRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.companyManager = companyManager;
         this.authManager = authManager;
@@ -477,5 +483,11 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         }else {
             throw new UserManagerException(ErrorType.ROLE_NOT_PERSONNEL);
         }
+    }
+    public Page<UserProfile> userProfileListSearch(String text, int pageNumber){
+        Pageable pageable = PageRequest.of(pageNumber - 1, 5); // pageNumber - 1 because pages are zero based index
+        Page<UserProfile> user = userProfilePageRepository.findByNameContainingIgnoreCaseOrSurnameContainingIgnoreCase(text,text, pageable);
+        System.out.println(user.getContent());
+        return user;
     }
 }
