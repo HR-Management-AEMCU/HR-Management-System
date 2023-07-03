@@ -1,8 +1,6 @@
 package com.bilgeadam.repository.entity;
 
-import com.bilgeadam.repository.enums.EGender;
-import com.bilgeadam.repository.enums.ERole;
-import com.bilgeadam.repository.enums.EStatus;
+import com.bilgeadam.repository.enums.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
