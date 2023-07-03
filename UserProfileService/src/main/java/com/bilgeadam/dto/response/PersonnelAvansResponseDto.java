@@ -16,7 +16,7 @@ public class PersonnelAvansResponseDto {
     private String name;
     private String surname;
     private String phone;
-    private String avansTotal;
+    private Double avansTotal;
     private String avansDescription;
     private Date avansDate;
 
