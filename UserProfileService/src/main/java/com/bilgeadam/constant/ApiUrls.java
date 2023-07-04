@@ -4,6 +4,7 @@ public class ApiUrls {
     public static final String VERSION= "api/v1";
     public static final String USER_PROFILE=VERSION+"/user-profile";
     public static final String AVANS=VERSION+"/avans";
+    public static final String SPEND=VERSION+"/spend";
     public static final String CREATE = "/create";
     public static final String CREATE_PERSONAL = "/create-personal";
     public static final String SEARCH_PERSONNEL = "/search-personnel";
@@ -23,6 +24,9 @@ public class ApiUrls {
     public static final String ADMIN_CHANGE_MANAGER_STATUS_CROSS = "/admin-change-manager-status-cross";
     public static final String ADMIN_MANAGER_APPROVAL = "/admin-manager-approval";
     public static final String PERSONNEL_AVANS = "/personnel-avans";
+    public static final String PERSONNEL_SPEND = "/personnel-spend";
     public static final String MANAGER_AVANS_STATUS_CHECK = "/manager-avans-status-check";
     public static final String MANAGER_AVANS_STATUS_CROSS = "/manager-avans-status-cross";
+    public static final String MANAGER_SPEND_STATUS_CHECK = "/manager-spend-status-check";
+    public static final String MANAGER_SPEND_STATUS_CROSS = "/manager-spend-status-cross";
 }
