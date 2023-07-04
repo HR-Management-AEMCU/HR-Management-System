@@ -23,4 +23,6 @@ public class ApiUrls {
     public static final String ADMIN_CHANGE_MANAGER_STATUS_CROSS = "/admin-change-manager-status-cross";
     public static final String ADMIN_MANAGER_APPROVAL = "/admin-manager-approval";
     public static final String PERSONNEL_AVANS = "/personnel-avans";
+    public static final String MANAGER_AVANS_STATUS_CHECK = "/manager-avans-status-check";
+    public static final String MANAGER_AVANS_STATUS_CROSS = "/manager-avans-status-cross";
 }
